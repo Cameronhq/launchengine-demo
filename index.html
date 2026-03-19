@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchEngine</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+/* Neutral palette — warm undertone */
+--bg:#fafaf9;--bg2:#f5f5f3;--bg3:#ecece9;--bg4:#e2e2df;--bg5:#d4d4d0;
+--surface:#fff;
+--border:#e8e7e4;--border2:#d6d5d1;--border3:#c0bfba;
+--text:#1c1c1a;--text2:#4a4a47;--text3:#7a7a76;--text4:#a8a8a3;
+/* Accent */
+--accent:#d4540e;--accent-bg:rgba(212,84,14,0.05);--accent-bd:rgba(212,84,14,0.15);--accent-text:#b8470b;
+/* Semantic */
+--green:#1a8b48;--green-bg:rgba(26,139,72,0.05);--green-bd:rgba(26,139,72,0.15);
+--yellow:#a67c0a;--yellow-bg:rgba(166,124,10,0.05);--yellow-bd:rgba(166,124,10,0.15);
+--red:#c63030;--red-bg:rgba(198,48,48,0.05);--red-bd:rgba(198,48,48,0.15);
+--blue:#1d6fcc;--blue-bg:rgba(29,111,204,0.05);--blue-bd:rgba(29,111,204,0.15);
+--purple:#6d3cc7;--purple-bg:rgba(109,60,199,0.05);--purple-bd:rgba(109,60,199,0.15);
+--pink:#b82a6a;--pink-bg:rgba(184,42,106,0.05);--pink-bd:rgba(184,42,106,0.15);
+/* Type */
+--mono:'IBM Plex Mono',monospace;
+--sans:'Instrument Sans',system-ui,sans-serif;
+/* Layout */
+--sw:244px;--t:all .18s ease;--r:8px;--r2:10px;
+/* Shadows */
+--shadow-sm:0 1px 2px rgba(0,0,0,.04);
+--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--accent);color:#fff;}
+
+/* ===================== SIDEBAR ===================== */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:10;}
+.main{margin-left:var(--sw);flex:1;}
+
+.s-logo{padding:20px 20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.s-logo .mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;}
+.s-logo .mark svg{width:14px;height:14px;}
+.s-logo .name{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-.3px;color:var(--text);}
+.s-logo .ver{font-family:var(--mono);font-size:9px;color:var(--text4);border:1px solid var(--border);padding:2px 6px;border-radius:4px;margin-left:auto;}
+
+.s-proj{margin:14px 12px 0;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);cursor:pointer;transition:var(--t);position:relative;}
+.s-proj:hover{border-color:var(--border2);}
+.s-proj .pn{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:space-between;}
+.s-proj .pn svg{width:14px;height:14px;color:var(--text4);flex-shrink:0;}
+.s-proj .pu{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:2px;}
+.s-proj .ps{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--green);margin-top:6px;font-weight:500;}
+.s-proj .ps::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0;}
+
+.s-nav{padding:10px 12px;flex:1;overflow-y:auto;}
+.nl{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--text4);padding:14px 8px 6px;}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r);color:var(--text3);cursor:pointer;transition:var(--t);font-size:13px;font-weight:500;position:relative;margin-bottom:2px;}
+.ni:hover{background:var(--bg2);color:var(--text2);}
+.ni.ac{background:var(--bg2);color:var(--text);}
+.ni .ic{width:16px;height:16px;opacity:.45;flex-shrink:0;}
+.ni.ac .ic{opacity:.75;}
+.nbg{position:absolute;right:10px;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bd);padding:1px 7px;border-radius:4px;}
+
+/* Tree */
+.tree{padding:0 2px;}
+.tc{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r);cursor:pointer;transition:var(--t);font-size:13px;font-weight:500;color:var(--text3);}
+.tc:hover{background:var(--bg2);color:var(--text2);}
+.tc .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.tc .ci{margin-left:auto;width:14px;height:14px;opacity:.25;}
+.tagts{margin-left:15px;border-left:1px solid var(--border);padding-left:15px;padding-top:2px;padding-bottom:2px;}
+.ta{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;transition:var(--t);font-size:12px;color:var(--text4);position:relative;font-weight:500;margin-bottom:1px;}
+.ta:hover,.ta.ac{background:var(--bg2);color:var(--text2);}
+.ta::before{content:'';position:absolute;left:-15px;top:50%;width:9px;height:1px;background:var(--border);}
+.ta .ad{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.ta .ab{margin-left:auto;font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 5px;border-radius:3px;border:1px solid;}
+
+.s-btm{padding:12px;border-top:1px solid var(--border);margin-top:auto;}
+.s-user{display:flex;align-items:center;gap:10px;padding:8px;}
+.s-user .av{width:26px;height:26px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3);}
+.s-user .uname{font-size:12px;font-weight:500;color:var(--text2);}
+.s-user .uplan{font-family:var(--mono);font-size:9px;color:var(--text4);}
+
+/* ===================== MAIN AREA ===================== */
+.ph{padding:24px 32px 0;display:flex;align-items:center;justify-content:space-between;}
+.pt{display:flex;align-items:center;gap:10px;}
+.pt h1{font-size:17px;font-weight:700;letter-spacing:-.3px;color:var(--text);}
+.pt .back{color:var(--text4);cursor:pointer;font-weight:500;}
+.pt .back:hover{color:var(--text2);}
+.ptag{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--text4);border:1px solid var(--border);padding:2px 8px;border-radius:4px;}
+.pa{display:flex;gap:8px;}
+.btn{font-family:var(--sans);padding:7px 16px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;transition:var(--t);border:1px solid var(--border);background:var(--surface);color:var(--text2);display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-sm);}
+.btn:hover{background:var(--bg2);color:var(--text);border-color:var(--border2);}
+.btn svg{width:14px;height:14px;flex-shrink:0;opacity:.6;}
+.bp{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 1px 3px rgba(212,84,14,.2);}
+.bp:hover{opacity:.92;background:var(--accent);}
+.bs{background:var(--text);color:#fff;border-color:var(--text);}
+.bs:hover{opacity:.92;}
+.pc{padding:20px 32px 48px;}
+
+/* ===================== COMPONENTS ===================== */
+/* Status banner */
+.status{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:var(--r2);margin-bottom:18px;border:1px solid;}
+.status .sd{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.status .sm{font-size:14px;font-weight:600;flex:1;}
+.status .sdate{font-family:var(--mono);font-size:10px;color:var(--text4);}
+
+/* Metric chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.chip{display:flex;align-items:baseline;gap:5px;padding:8px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow-sm);}
+.chip .cv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text);}
+.chip .cl{font-size:12px;color:var(--text4);}
+.chip .cd{font-family:var(--mono);font-size:10px;font-weight:600;margin-left:2px;}
+
+/* CMO line */
+.cmo-line{font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:18px;}
+.cmo-line strong{color:var(--text);font-weight:600;}
+
+/* Section label */
+.sl{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text4);padding:14px 0 10px;display:flex;align-items:center;gap:10px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+.sl .sla{font-size:10px;letter-spacing:0;text-transform:none;cursor:pointer;font-weight:500;}.sl .sla:hover{color:var(--text2);}
+
+/* Card */
+.card{border:1px solid var(--border);border-radius:var(--r2);margin-bottom:10px;overflow:hidden;background:var(--surface);transition:var(--t);box-shadow:var(--shadow-sm);}
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.card-h{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.card-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;flex-shrink:0;border:1px solid;}
+.card-info{flex:1;min-width:0;}
+.card-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-sub{font-size:11px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-act{flex-shrink:0;display:flex;gap:6px;}
+.card-tag{font-family:var(--mono);font-size:8px;font-weight:600;padding:3px 7px;border-radius:4px;flex-shrink:0;border:1px solid;}
+
+/* Toggle detail */
+.tg{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--text4);cursor:pointer;padding:0 16px 10px;font-weight:500;}
+.tg:hover{color:var(--text2);}
+.tg svg{width:9px;height:9px;transition:transform .15s;}.tg.open svg{transform:rotate(90deg);}
+.td{display:none;padding:0 16px 14px;font-size:12px;color:var(--text3);line-height:1.7;border-top:1px solid var(--border);}
+.td.open{display:block;padding-top:12px;}.td strong{color:var(--text2);font-weight:500;}
+
+/* Card decision variant */
+.card-decision{border-color:var(--purple-bd);background:var(--purple-bg);}
+
+/* Activity collapse */
+.act-card{border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);margin-bottom:10px;box-shadow:var(--shadow-sm);}
+.act-h{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;transition:var(--t);}
+.act-h:hover{background:var(--bg2);}
+.act-h svg{width:10px;height:10px;transition:transform .15s;color:var(--text4);flex-shrink:0;}.act-h.open svg{transform:rotate(90deg);}
+.act-cnt{font-family:var(--mono);font-size:11px;color:var(--text3);font-weight:500;}
+.act-live{font-family:var(--mono);font-size:10px;color:var(--green);display:inline-flex;align-items:center;gap:4px;font-weight:500;margin-left:auto;}.act-live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.act-body{display:none;border-top:1px solid var(--border);}.act-body.open{display:block;}
+.act-item{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px;}.act-item:last-child{border-bottom:none;}.act-item:hover{background:var(--bg2);}
+.act-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.act-text{color:var(--text2);line-height:1.55;flex:1;}.act-text strong{color:var(--text);font-weight:600;}
+.act-time{font-family:var(--mono);font-size:10px;color:var(--text4);flex-shrink:0;margin-top:1px;}
+
+/* Approve all */
+.approve-all{text-align:center;padding:10px 0 4px;}
+
+/* Done */
+.done{text-align:center;padding:28px 0;color:var(--text4);}
+.done-ck{width:34px;height:34px;border-radius:50%;background:var(--green-bg);border:1px solid var(--green-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.done-t{font-family:var(--mono);font-size:11px;font-weight:500;}
+
+/* Agent header */
+.ah{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.ah-icon{width:40px;height:40px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;border:1px solid;}
+.ah-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.2px;}
+.ah-desc{font-size:12px;color:var(--text3);margin-top:2px;}
+.ah-st{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;padding:4px 10px;border-radius:5px;border:1px solid;}
+
+/* Metrics row */
+.mrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.met{border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;background:var(--surface);box-shadow:var(--shadow-sm);}
+.met .ml{font-size:10px;color:var(--text4);font-weight:500;}
+.met .mv{font-family:var(--mono);font-size:20px;font-weight:700;margin-top:4px;letter-spacing:-.5px;color:var(--text);}
+.met .md{font-family:var(--mono);font-size:10px;font-weight:600;margin-top:2px;}
+
+/* Pipeline */
+.pipeline{border:1px solid var(--border);border-radius:var(--r2);padding:20px 24px;margin-bottom:18px;background:var(--bg2);}
+.pipeline-title{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text4);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.pipeline-title .ld{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.pipe-row{display:flex;align-items:center;margin-bottom:26px;}.pipe-row:last-child{margin-bottom:0;}
+.pipe-label{width:135px;flex-shrink:0;}.pipe-label-name{font-size:13px;font-weight:600;color:var(--text);}.pipe-label-freq{font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:500;margin-top:1px;}
+.pipe-track{flex:1;position:relative;height:36px;display:flex;align-items:center;}
+.pipe-line{position:absolute;top:50%;left:0;right:0;height:2px;background:var(--border2);transform:translateY(-50%);}
+.pipe-fill{position:absolute;top:50%;left:0;height:2px;transform:translateY(-50%);border-radius:1px;}
+.pipe-nodes{position:relative;display:flex;align-items:center;width:100%;justify-content:space-between;z-index:1;}
+.nd{width:14px;height:14px;min-width:14px;max-height:14px;flex-shrink:0;flex-grow:0;border-radius:50%;border:2px solid var(--border2);background:var(--surface);transition:var(--t);position:relative;box-sizing:content-box;aspect-ratio:1;}
+.nd.done{background:var(--green);border-color:var(--green);padding:0;text-align:initial;}.nd.done::after{content:'';position:absolute;top:3px;left:3px;width:4px;height:4px;border-radius:50%;background:#fff;}
+.nd.active{border-color:var(--accent);animation:np 2s infinite;}.nd.active::after{content:'';position:absolute;top:-5px;left:-5px;right:-5px;bottom:-5px;border-radius:50%;border:2px solid var(--accent);opacity:.25;animation:rp 2s infinite;}
+.nd.err{background:var(--red);border-color:var(--red);}.nd.err::after{content:'';position:absolute;top:3px;left:3px;width:4px;height:4px;border-radius:50%;background:#fff;}
+.ps2{position:absolute;top:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:8px;font-weight:600;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid;}
+@keyframes np{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes rp{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.08;transform:scale(1.3)}}
+
+/* Live output panel */
+.live{border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:18px;background:var(--surface);box-shadow:var(--shadow-sm);}
+.live-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.live-h .ld{width:7px;height:7px;border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0;}
+.live-h .lt{font-family:var(--mono);font-size:12px;font-weight:600;flex:1;color:var(--text);}
+.live-h .ls{font-family:var(--mono);font-size:10px;color:var(--text4);font-weight:500;}
+.live-b{font-family:var(--mono);font-size:11px;max-height:380px;overflow-y:auto;}
+.lstep{padding:12px 16px;border-bottom:1px solid var(--border);}.lstep:last-child{border-bottom:none;}.lstep.active{background:rgba(212,84,14,0.02);}
+.lstep-h{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.lstep-ic{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;border:1px solid;}
+.lstep-ic.d{background:var(--green-bg);color:var(--green);border-color:var(--green-bd);}
+.lstep-ic.r{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);}
+.lstep-ic.p{background:var(--bg3);color:var(--text4);border-color:var(--border);}
+.lstep-n{font-size:12px;font-weight:600;color:var(--text);}
+.lstep-t{font-size:10px;color:var(--text4);margin-left:auto;font-weight:500;}
+.lstep-o{margin-left:28px;font-size:11px;color:var(--text3);line-height:1.75;}
+.lo{padding:1px 0;display:flex;gap:6px;}
+.lo .p{color:var(--text4);flex-shrink:0;width:13px;text-align:right;font-weight:500;}
+.lo .v{color:var(--text2);}.lo .ok{color:var(--green);}.lo .w{color:var(--yellow);}.lo .e{color:var(--red);}.lo .hl{color:var(--text);font-weight:600;}.lo .str{color:var(--text2);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cur{display:inline-block;width:6px;height:12px;background:var(--accent);animation:blink .8s step-end infinite;vertical-align:text-bottom;border-radius:1px;margin-left:2px;}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);}
+.tbl th{text-align:left;padding:9px 14px;font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.tbl td{padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--bg2);}
+.tn{font-weight:600;color:var(--text);}
+.mn{font-family:var(--mono);}
+.tag{font-family:var(--mono);font-size:8px;font-weight:600;padding:3px 7px;border-radius:4px;border:1px solid;display:inline-block;}
+.ch{font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 6px;border-radius:3px;display:inline-block;margin-right:3px;border:1px solid;}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.tab{font-family:var(--mono);padding:10px 16px;font-size:11px;font-weight:500;color:var(--text4);cursor:pointer;border-bottom:2px solid transparent;transition:var(--t);}
+.tab:hover{color:var(--text2);}.tab.ac{color:var(--text);border-bottom-color:var(--accent);}
+
+/* Two column */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* Thread (Reddit) */
+.thread{border:1px solid var(--border);border-radius:var(--r2);padding:16px 18px;margin-bottom:10px;background:var(--surface);transition:var(--t);box-shadow:var(--shadow-sm);}.thread:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.thread-sub{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-bd);padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:5px;}
+.thread-title{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--text);}
+.thread-meta{font-family:var(--mono);font-size:10px;color:var(--text4);display:flex;gap:10px;margin-bottom:8px;font-weight:500;}
+.thread-reply{padding:10px 12px;background:var(--bg2);border-radius:var(--r);border-left:2px solid var(--border2);font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:8px;}
+.thread-acts{display:flex;gap:6px;}
+.thread-perf{font-family:var(--mono);font-size:10px;color:var(--text4);display:flex;gap:10px;margin-top:6px;font-weight:500;}.thread-perf .up{color:var(--green);}
+
+/* GEO scorecard */
+.geo-row{border:1px solid var(--border);border-radius:var(--r2);padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;background:var(--surface);transition:var(--t);box-shadow:var(--shadow-sm);}.geo-row:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.geo-name{font-size:14px;font-weight:600;width:95px;flex-shrink:0;color:var(--text);}
+.geo-bar-w{flex:1;}.geo-bar{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;}.geo-bar .gf{height:100%;border-radius:4px;}.geo-bar-info{font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:4px;font-weight:500;}
+.geo-score{font-family:var(--mono);font-size:22px;font-weight:700;width:50px;text-align:right;flex-shrink:0;}
+.geo-delta{font-family:var(--mono);font-size:11px;font-weight:600;width:40px;text-align:right;flex-shrink:0;}
+
+/* XHS grid */
+.xhs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;}
+.xhs-card{border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:var(--t);background:var(--surface);box-shadow:var(--shadow-sm);}.xhs-card:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.xhs-cover{height:100px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);font-weight:500;position:relative;}
+.xhs-cover .xst{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:8px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid;}
+.xhs-body{padding:10px 12px;}.xhs-title{font-size:12px;font-weight:600;line-height:1.4;color:var(--text);}.xhs-meta{font-family:var(--mono);font-size:9px;color:var(--text4);margin-top:4px;display:flex;gap:8px;font-weight:500;}
+
+/* Health bars */
+.hb{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.hb .hl{width:60px;font-size:10px;color:var(--text3);flex-shrink:0;font-weight:500;}
+.hb .ht{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.hb .hf{height:100%;border-radius:3px;}
+.hb .hs{width:30px;font-family:var(--mono);font-size:9px;color:var(--text2);text-align:right;font-weight:600;}
+
+/* Calendar mini */
+.cal{border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;background:var(--surface);box-shadow:var(--shadow-sm);}
+.cal-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-hdr{font-family:var(--mono);font-size:9px;color:var(--text4);text-align:center;padding:3px;font-weight:600;}
+.cal-d{min-height:48px;padding:4px;border-radius:5px;font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:500;}
+.cal-d.today{background:var(--bg3);}
+.cal-ev{font-size:8px;font-family:var(--sans);font-weight:500;padding:2px 3px;border-radius:3px;margin-top:2px;line-height:1.2;}
+
+/* Work progress */
+.wp{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;}
+.wp-item{border:1px solid var(--border);border-radius:var(--r2);padding:12px;background:var(--surface);box-shadow:var(--shadow-sm);}
+.wp-item .wp-agent{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.wp-item .wp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.wp-item .wp-name{font-size:11px;font-weight:600;color:var(--text);}
+.wp-item .wp-bar-w{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:4px;}
+.wp-item .wp-bar-f{height:100%;border-radius:2px;}
+.wp-item .wp-stat{font-family:var(--mono);font-size:10px;color:var(--text3);font-weight:500;}
+.wp-item .wp-stat b{color:var(--text);font-weight:700;}
+
+/* Date header */
+.date-header{font-family:var(--mono);font-size:12px;color:var(--text4);font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.date-header .dh-day{font-size:16px;font-weight:700;color:var(--text);}
+
+/* ===================== PANELS ===================== */
+/* CMO panel */
+.cmo-fab{position:fixed;bottom:28px;right:28px;width:48px;height:48px;border-radius:50%;background:var(--purple);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:90;box-shadow:0 4px 20px rgba(109,60,199,.2);transition:var(--t);}
+.cmo-fab:hover{transform:scale(1.06);box-shadow:0 6px 28px rgba(109,60,199,.28);}
+.cmo-fab svg{width:20px;height:20px;}
+
+.pn-ov{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:99;opacity:0;pointer-events:none;transition:opacity .2s;}.pn-ov.open{opacity:1;pointer-events:all;}
+.pn-slide{position:fixed;top:0;right:-440px;bottom:0;width:440px;background:var(--surface);border-left:1px solid var(--border);z-index:100;display:flex;flex-direction:column;transition:right .28s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 30px rgba(0,0,0,.06);}.pn-slide.open{right:0;}
+.pn-ph{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.pn-ph h3{font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px;}
+.pn-ph .pic{width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;border:1px solid;}
+.pn-cl{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:var(--t);}.pn-cl:hover{background:var(--bg2);color:var(--text);}
+.pn-tabs{display:flex;border-bottom:1px solid var(--border);}.pn-tab{flex:1;padding:10px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text4);cursor:pointer;border-bottom:2px solid transparent;transition:var(--t);}.pn-tab:hover{color:var(--text2);}.pn-tab.ac{color:var(--text);border-bottom-color:var(--accent);}
+.pn-body{flex:1;overflow-y:auto;padding:16px 18px;}
+.pn-ia{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.pn-in{flex:1;padding:10px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:var(--sans);outline:none;resize:none;min-height:40px;}.pn-in:focus{border-color:var(--border3);}.pn-in::placeholder{color:var(--text4);}
+.pn-sn{padding:10px 18px;border-radius:var(--r);background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;align-self:flex-end;}
+
+/* Chat messages */
+.cm{display:flex;gap:10px;margin-bottom:12px;}.cm.u{flex-direction:row-reverse;}
+.cm .ca{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px;border:1px solid;}
+.cm .cb{padding:12px 14px;border-radius:var(--r2);font-size:13px;line-height:1.65;max-width:82%;}
+.cm.a .cb{background:var(--bg2);border:1px solid var(--border);color:var(--text2);}
+.cm.u .cb{background:var(--accent-bg);border:1px solid var(--accent-bd);color:var(--text);}
+.cm .cb strong{color:var(--text);font-weight:600;}
+.plan-c{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:12px;}
+.plan-c h5{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.plan-c li{padding:2px 0;color:var(--text2);list-style:none;padding-left:12px;position:relative;font-size:11px;line-height:1.55;}
+.plan-c li::before{content:'';position:absolute;left:0;top:7px;width:4px;height:4px;border-radius:50%;background:var(--text4);}
+.plan-acts{display:flex;gap:6px;margin-top:8px;}
+
+/* Settings items in panel */
+.sp-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text4);margin:16px 0 8px;}.sp-label:first-child{margin-top:0;}
+.sp-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:5px;transition:var(--t);background:var(--surface);}.sp-row:hover{border-color:var(--border2);}
+.sp-row-name{font-size:12px;font-weight:600;color:var(--text);}
+.sp-row-desc{font-size:10px;color:var(--text4);margin-top:1px;}
+.sp-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;padding:0 12px 8px;}
+.sp-tag{font-family:var(--mono);font-size:9px;font-weight:500;padding:4px 8px;border-radius:5px;color:var(--text2);border:1px solid var(--border);cursor:pointer;transition:var(--t);}.sp-tag:hover{border-color:var(--border3);color:var(--text);}
+.sp-tag.add{color:var(--accent);border-color:var(--accent-bd);background:var(--accent-bg);font-weight:600;}
+.sp-select{font-family:var(--mono);font-size:10px;font-weight:500;padding:5px 10px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer;outline:none;}
+.sp-input-sm{font-family:var(--mono);font-size:11px;font-weight:500;padding:5px 10px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text);width:64px;text-align:center;outline:none;}.sp-input-sm:focus{border-color:var(--border3);}
+.sp-tog{position:relative;width:32px;height:18px;border-radius:9px;cursor:pointer;flex-shrink:0;}
+.sp-tog input{opacity:0;width:0;height:0;position:absolute;}
+.sp-tog .sr{position:absolute;inset:0;border-radius:9px;background:var(--bg4);transition:var(--t);}
+.sp-tog .sr::before{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:var(--t);box-shadow:var(--shadow-sm);}
+.sp-tog input:checked+.sr{background:var(--accent);}
+.sp-tog input:checked+.sr::before{transform:translateX(14px);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.fi{animation:fadeUp .28s ease forwards;}.f1{animation-delay:.08s;opacity:0;}.f2{animation-delay:.16s;opacity:0;}.f3{animation-delay:.24s;opacity:0;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ===================== ONBOARDING ===================== */
+.ob-overlay{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .4s ease;}
+.ob-overlay.hidden{opacity:0;pointer-events:none;}
+.ob-container{width:100%;max-width:580px;padding:0 24px;text-align:center;}
+.ob-step{display:none;animation:fadeUp .35s ease forwards;}
+.ob-step.active{display:block;}
+.ob-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:48px;}
+.ob-logo .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;}
+.ob-logo .mark svg{width:16px;height:16px;}
+.ob-logo .name{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:-.3px;color:var(--text);}
+.ob-h1{font-size:28px;font-weight:700;letter-spacing:-.5px;color:var(--text);line-height:1.3;margin-bottom:8px;}
+.ob-sub{font-size:15px;color:var(--text3);line-height:1.6;margin-bottom:32px;}
+.ob-url-wrap{display:flex;gap:8px;max-width:480px;margin:0 auto 12px;}
+.ob-url{flex:1;padding:14px 18px;border-radius:var(--r2);border:1px solid var(--border2);background:var(--surface);font-size:15px;font-family:var(--mono);color:var(--text);outline:none;transition:var(--t);}
+.ob-url:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.ob-url::placeholder{color:var(--text4);}
+.ob-analyze-btn{padding:14px 28px;border-radius:var(--r2);background:var(--accent);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:var(--t);box-shadow:0 2px 8px rgba(212,84,14,.2);white-space:nowrap;}
+.ob-analyze-btn:hover{opacity:.92;box-shadow:0 4px 16px rgba(212,84,14,.25);}
+.ob-analyze-btn:disabled{opacity:.5;cursor:not-allowed;}
+.ob-hint{font-family:var(--mono);font-size:11px;color:var(--text4);margin-top:6px;}
+
+/* Scanning animation */
+.ob-scan{text-align:left;max-width:420px;margin:0 auto;margin-top:36px;}
+.ob-scan-line{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;color:var(--text3);opacity:0;transform:translateY(4px);transition:all .3s ease;}
+.ob-scan-line.show{opacity:1;transform:translateY(0);}
+.ob-scan-line.done{color:var(--green);}
+.ob-scan-line .ob-scan-ico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;}
+.ob-scan-line.done .ob-scan-ico{background:var(--green-bg);color:var(--green);}
+.ob-scan-line:not(.done) .ob-scan-ico{color:var(--text4);}
+.ob-spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Analysis result */
+.ob-result{text-align:left;max-width:480px;margin:28px auto 0;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);overflow:hidden;box-shadow:var(--shadow);animation:fadeUp .3s ease forwards;}
+.ob-result-h{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;}
+.ob-result-h .ob-result-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.ob-result-h span{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--green);}
+.ob-result-body{padding:18px;}
+.ob-result-row{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.ob-result-row:last-child{margin-bottom:0;}
+.ob-result-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text4);width:85px;flex-shrink:0;padding-top:3px;}
+.ob-result-val{font-size:13px;color:var(--text);font-weight:500;line-height:1.5;}
+.ob-result-val .ob-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;padding:3px 8px;border-radius:5px;border:1px solid var(--border);color:var(--text2);margin-right:4px;margin-bottom:3px;background:var(--bg2);}
+.ob-result-actions{display:flex;justify-content:center;gap:8px;margin-top:24px;}
+
+/* Step 3: Goals */
+.ob-goals{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:480px;margin:0 auto 28px;text-align:left;}
+.ob-goal{padding:16px 18px;border:1.5px solid var(--border);border-radius:var(--r2);background:var(--surface);cursor:pointer;transition:var(--t);box-shadow:var(--shadow-sm);}
+.ob-goal:hover{border-color:var(--border3);box-shadow:var(--shadow);}
+.ob-goal.selected{border-color:var(--accent);background:var(--accent-bg);box-shadow:0 0 0 3px rgba(212,84,14,.08);}
+.ob-goal .ob-goal-emoji{font-size:20px;margin-bottom:6px;}
+.ob-goal .ob-goal-name{font-size:13px;font-weight:600;color:var(--text);}
+.ob-goal .ob-goal-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
+
+
+/* Step 4: Ready */
+.ob-agents-list{max-width:420px;margin:0 auto 32px;text-align:left;}
+.ob-agent-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--border);border-radius:var(--r2);margin-bottom:8px;background:var(--surface);box-shadow:var(--shadow-sm);opacity:0;transform:translateY(6px);animation:fadeUp .3s ease forwards;}
+.ob-agent-row:nth-child(1){animation-delay:.1s;}
+.ob-agent-row:nth-child(2){animation-delay:.2s;}
+.ob-agent-row:nth-child(3){animation-delay:.3s;}
+.ob-agent-row:nth-child(4){animation-delay:.4s;}
+.ob-agent-row:nth-child(5){animation-delay:.5s;}
+.ob-agent-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;flex-shrink:0;border:1px solid;}
+.ob-agent-info{flex:1;}
+.ob-agent-name{font-size:13px;font-weight:600;color:var(--text);}
+.ob-agent-desc{font-size:11px;color:var(--text3);margin-top:1px;}
+.ob-agent-status{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:5px;}
+.ob-agent-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.ob-ready-icon{width:64px;height:64px;border-radius:50%;background:var(--green-bg);border:2px solid var(--green-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:fadeUp .3s ease forwards;}
+.ob-ready-icon svg{width:28px;height:28px;color:var(--green);}
+
+/* Progress */
+.ob-progress{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:36px;}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--bg4);transition:var(--t);}
+.ob-dot.active{background:var(--accent);transform:scale(1.2);}
+.ob-dot.passed{background:var(--green);}
+
+.ob-continue{padding:14px 32px;border-radius:var(--r2);background:var(--text);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:var(--t);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.ob-continue:hover{opacity:.92;}
+.ob-continue:disabled{opacity:.4;cursor:not-allowed;}
+.ob-launch-btn{padding:16px 36px;border-radius:var(--r2);background:var(--accent);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans);transition:var(--t);box-shadow:0 4px 20px rgba(212,84,14,.25);letter-spacing:-.2px;}
+.ob-launch-btn:hover{opacity:.92;box-shadow:0 6px 28px rgba(212,84,14,.3);transform:translateY(-1px);}
+
+/* Onboarding: example URLs */
+.ob-examples{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.ob-example{font-family:var(--mono);font-size:11px;color:var(--text4);padding:4px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:var(--t);background:var(--surface);}
+.ob-example:hover{border-color:var(--accent-bd);color:var(--accent);background:var(--accent-bg);}
+
+/* Onboarding: inline edit mode */
+.ob-result-val input.ob-edit-input{font-family:var(--sans);font-size:13px;color:var(--text);font-weight:500;padding:4px 8px;border:1px solid var(--accent-bd);border-radius:5px;background:var(--accent-bg);outline:none;width:100%;box-sizing:border-box;}
+.ob-result-val input.ob-edit-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(212,84,14,.08);}
+
+/* Onboarding: goal checkmark */
+.ob-goal{position:relative;}
+.ob-goal .ob-goal-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;transition:var(--t);font-size:0;}
+.ob-goal.selected .ob-goal-check{background:var(--accent);border-color:var(--accent);color:#fff;font-size:11px;}
+
+/* Onboarding: agent launch animation */
+.ob-agent-row.launching .ob-agent-status{color:var(--text4);}
+.ob-agent-row.launching .ob-agent-status::before{background:var(--text4);animation:none;}
+.ob-agent-row.launched .ob-agent-status{color:var(--green);}
+.ob-agent-row.launched .ob-agent-status::before{background:var(--green);animation:pulse 1.5s infinite;}
+@keyframes agentActivate{from{box-shadow:0 0 0 0 rgba(26,139,72,.3)}to{box-shadow:0 0 0 8px rgba(26,139,72,0)}}
+.ob-agent-row.activating{animation:agentActivate .5s ease;}
+
+/* ===================== UI POLISH ===================== */
+/* Sidebar: active accent border */
+.ni.ac{background:var(--bg2);color:var(--text);border-left:2.5px solid var(--accent);padding-left:7.5px;}
+
+/* Card hover micro-interaction */
+.card:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateY(-1px);}
+.card{transition:all .18s ease;}
+
+/* Pipeline: prevent label overflow */
+.ps2{position:absolute;top:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:8px;font-weight:600;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
+
+/* Agent breadcrumb arrow */
+.back-arrow{display:inline-flex;align-items:center;gap:3px;}
+.back-arrow svg{width:14px;height:14px;opacity:.5;}
+.back-arrow:hover svg{opacity:.8;}
+
+/* Home: activity feed default open top items */
+.act-body.peek{display:block;max-height:none;}
+.act-preview{border-bottom:1px solid var(--border);}
+
+/* Approve card: priority indicator */
+.card-priority{font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid;margin-left:6px;flex-shrink:0;}
+
+/* CMO quick actions */
+.cmo-quick{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 12px;}
+.cmo-chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:5px 10px;border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:var(--t);color:var(--text3);background:var(--surface);}
+.cmo-chip:hover{border-color:var(--purple-bd);color:var(--purple);background:var(--purple-bg);}
+
+/* Decision card: mini chart */
+.decision-chart{display:flex;align-items:flex-end;gap:3px;height:32px;padding:4px 16px 10px;}
+.decision-bar{width:14px;border-radius:3px 3px 0 0;transition:var(--t);}
+</style>
+</head>
+<body>
+
+<!-- ===================== ONBOARDING OVERLAY ===================== -->
+<div class="ob-overlay" id="ob-overlay">
+<div class="ob-container">
+
+<!-- Step 1: Welcome + URL -->
+<div class="ob-step active" id="ob-step-1">
+<div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
+<h1 class="ob-h1">Set up your AI marketing team</h1>
+<p class="ob-sub">Paste your website URL — we'll analyze your site and configure everything automatically.</p>
+<div class="ob-url-wrap">
+<input class="ob-url" id="ob-url" type="url" placeholder="https://yourproduct.com" spellcheck="false">
+<button class="ob-analyze-btn" id="ob-analyze-btn" onclick="obAnalyze()">Analyze</button>
+</div>
+<p class="ob-hint">We'll scan your site for product info, audience, and competitors</p>
+<div class="ob-examples">
+<span class="ob-example" onclick="document.getElementById('ob-url').value='https://stripe.com';document.getElementById('ob-url').focus()">stripe.com</span>
+<span class="ob-example" onclick="document.getElementById('ob-url').value='https://notion.so';document.getElementById('ob-url').focus()">notion.so</span>
+<span class="ob-example" onclick="document.getElementById('ob-url').value='https://linear.app';document.getElementById('ob-url').focus()">linear.app</span>
+</div>
+<div class="ob-progress"><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+</div>
+
+<!-- Step 2: Scanning + Results -->
+<div class="ob-step" id="ob-step-2">
+<div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
+<h1 class="ob-h1">Analyzing your website...</h1>
+<p class="ob-sub" id="ob-scan-sub">Hang tight — this usually takes a few seconds.</p>
+<div class="ob-scan" id="ob-scan">
+<div class="ob-scan-line" id="osl-1"><span class="ob-scan-ico"><div class="ob-spinner"></div></span>Scanning pages...</div>
+<div class="ob-scan-line" id="osl-2"><span class="ob-scan-ico"><div class="ob-spinner"></div></span>Extracting product info...</div>
+<div class="ob-scan-line" id="osl-3"><span class="ob-scan-ico"><div class="ob-spinner"></div></span>Identifying target audience...</div>
+<div class="ob-scan-line" id="osl-4"><span class="ob-scan-ico"><div class="ob-spinner"></div></span>Analyzing competitors...</div>
+</div>
+<div id="ob-result-wrap" style="display:none;">
+<div class="ob-result">
+<div class="ob-result-h"><div class="ob-result-dot"></div><span>Analysis complete</span></div>
+<div class="ob-result-body">
+<div class="ob-result-row"><div class="ob-result-label">Product</div><div class="ob-result-val" id="obr-product">YourProduct</div></div>
+<div class="ob-result-row"><div class="ob-result-label">Category</div><div class="ob-result-val" id="obr-category">SaaS Analytics</div></div>
+<div class="ob-result-row"><div class="ob-result-label">Audience</div><div class="ob-result-val" id="obr-audience">SaaS founders & PMs, B2B, $5-50K MRR</div></div>
+<div class="ob-result-row"><div class="ob-result-label">Competitors</div><div class="ob-result-val" id="obr-competitors"><span class="ob-tag">Mixpanel</span><span class="ob-tag">Amplitude</span><span class="ob-tag">PostHog</span></div></div>
+</div>
+</div>
+<div class="ob-result-actions">
+<button class="ob-continue" id="ob-confirm-btn" onclick="obGoStep(3)">Looks good</button>
+<button class="btn" id="ob-edit-btn" onclick="obToggleEdit()" style="padding:14px 24px;font-size:14px;">Edit</button>
+</div>
+</div>
+<div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+</div>
+
+<!-- Step 3: Goals + Tone -->
+<div class="ob-step" id="ob-step-3">
+<div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
+<h1 class="ob-h1">Set your goals</h1>
+<p class="ob-sub">What should your AI marketing team focus on?</p>
+<div class="ob-goals">
+<div class="ob-goal" onclick="obToggleGoal(this)"><div class="ob-goal-check">✓</div><div class="ob-goal-emoji">🎯</div><div class="ob-goal-name">Get first 100 users</div><div class="ob-goal-desc">Kickstart growth from zero with targeted content</div></div>
+<div class="ob-goal" onclick="obToggleGoal(this)"><div class="ob-goal-check">✓</div><div class="ob-goal-emoji">📈</div><div class="ob-goal-name">Increase traffic</div><div class="ob-goal-desc">Drive more organic visitors to your site</div></div>
+<div class="ob-goal" onclick="obToggleGoal(this)"><div class="ob-goal-check">✓</div><div class="ob-goal-emoji">🔍</div><div class="ob-goal-name">Improve SEO ranking</div><div class="ob-goal-desc">Climb search results for key terms</div></div>
+<div class="ob-goal" onclick="obToggleGoal(this)"><div class="ob-goal-check">✓</div><div class="ob-goal-emoji">📣</div><div class="ob-goal-name">Grow social presence</div><div class="ob-goal-desc">Build audience on Reddit, 小红书 & more</div></div>
+</div>
+<button class="ob-continue" id="ob-goals-btn" onclick="obGoStep(4)" disabled>Continue</button>
+<div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
+</div>
+
+<!-- Step 4: Ready -->
+<div class="ob-step" id="ob-step-4">
+<div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
+<div class="ob-ready-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+<h1 class="ob-h1">Your AI marketing team is ready</h1>
+<p class="ob-sub" id="ob-ready-sub">5 agents will start working on your goals now.</p>
+<div class="ob-agents-list" id="ob-agents-list"></div>
+<button class="ob-launch-btn" onclick="obFinish()">Launch AI Marketing Team</button>
+<div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot active"></div></div>
+</div>
+
+</div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+<div class="s-logo">
+<div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+<div class="name">LaunchEngine</div>
+<div class="ver">v1.0</div>
+</div>
+<div class="s-proj" onclick="alert('Switch project: Select from YourProduct, SideProject, ClientApp...')">
+<div class="pn">YourProduct <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="pu">yourproduct.com</div>
+<div class="ps">5 agents active</div>
+</div>
+<nav class="s-nav">
+<div class="nl">workspace</div>
+<div class="ni ac" id="n-home" onclick="go('home')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Home</div>
+<div class="ni" id="n-approve" onclick="go('approve')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Approve<span class="nbg">3</span></div>
+<div class="ni" id="n-content" onclick="go('content')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Content</div>
+<div class="ni" id="n-knowledge" onclick="go('knowledge')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Knowledge</div>
+<div class="ni" id="n-insights" onclick="go('insights')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Insights</div>
+<div class="ni" id="n-reports" onclick="go('reports')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Reports</div>
+<div class="nl">your team</div>
+<div class="tree">
+<div class="tc" onclick="openCMO()">
+<div class="dot" style="background:var(--purple)"></div>CMO
+<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+</div>
+<div class="tagts">
+<div class="ta" id="n-blog" onclick="go('blog')"><div class="ad" style="background:var(--purple)"></div>Blog<span class="ab" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd)">...</span></div>
+<div class="ta" id="n-seo" onclick="go('seo')"><div class="ad" style="background:var(--green)"></div>SEO<span class="ab" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">ok</span></div>
+<div class="ta" id="n-reddit" onclick="go('reddit')"><div class="ad" style="background:var(--accent)"></div>Reddit<span class="ab" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">2</span></div>
+<div class="ta" id="n-xhs" onclick="go('xhs')"><div class="ad" style="background:var(--pink)"></div>小红书<span class="ab" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">1</span></div>
+<div class="ta" id="n-geo" onclick="go('geo')"><div class="ad" style="background:var(--blue)"></div>GEO<span class="ab" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">ok</span></div>
+</div>
+</div>
+</nav>
+<div class="s-btm">
+<div class="s-user">
+<div class="av">JD</div>
+<div><div class="uname">John Doe</div><div class="uplan">Starter · $99/mo</div></div>
+</div>
+</div>
+</aside>
+<main class="main" id="mc"></main>
+</div>
+
+<!-- CMO FAB -->
+<button class="cmo-fab" onclick="openCMO()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+
+<!-- CMO Panel -->
+<div class="pn-ov" id="cmo-ov" onclick="closeCMO()"></div>
+<div class="pn-slide" id="cmo-pn">
+<div class="pn-ph"><h3><span class="pic" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">C</span>CMO</h3><button class="pn-cl" onclick="closeCMO()">&times;</button></div>
+<div class="pn-tabs"><div class="pn-tab ac" onclick="cmoTab('chat')">Chat</div><div class="pn-tab" onclick="cmoTab('plan')">Plan</div><div class="pn-tab" onclick="cmoTab('calendar')">Calendar</div></div>
+<div class="pn-body" id="cmo-body">
+<div class="cmo-quick">
+<span class="cmo-chip" onclick="document.getElementById('cmo-in').value='What\'s working best?';sendCMOMsg()">What's working?</span>
+<span class="cmo-chip" onclick="document.getElementById('cmo-in').value='Show me this week\'s ROI';sendCMOMsg()">This week's ROI</span>
+<span class="cmo-chip" onclick="document.getElementById('cmo-in').value='Pause low-performing agents';sendCMOMsg()">Pause low performers</span>
+</div>
+<div class="cm a"><div class="ca" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">C</div><div class="cb">Traffic up <strong>18%</strong>. Onboarding article got picked up by 2 newsletters — doubling down on this angle.
+<div class="plan-c"><h5>Next week</h5><ul><li>Blog: 2 onboarding articles</li><li>Reddit: 5 churn/onboarding threads</li><li>小红书: Adapt articles to Chinese carousels</li><li>SEO: Refresh "saas metrics" article</li></ul><div class="plan-acts"><button class="bp btn" style="font-size:10px;padding:5px 12px;">Approve plan</button><button class="btn" style="font-size:10px;padding:5px 12px;">Adjust</button></div></div></div></div>
+</div>
+<div class="pn-ia"><textarea class="pn-in" id="cmo-in" placeholder="Talk to your CMO..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendCMOMsg()}"></textarea><button class="pn-sn" onclick="sendCMOMsg()">Send</button></div>
+</div>
+
+<!-- Agent Panel -->
+<div class="pn-ov" id="ap-ov" onclick="closeAP()"></div>
+<div class="pn-slide" id="ap-pn">
+<div class="pn-ph"><h3 id="ap-title"></h3><button class="pn-cl" onclick="closeAP()">&times;</button></div>
+<div class="pn-tabs"><div class="pn-tab ac" id="apt-chat" onclick="apTab('chat')">Chat</div><div class="pn-tab" id="apt-set" onclick="apTab('settings')">Settings</div></div>
+<div class="pn-body" id="ap-body"></div>
+<div class="pn-ia" id="ap-ia"><textarea class="pn-in" id="ap-in" placeholder="Talk to this agent..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAPMsg()}"></textarea><button class="pn-sn" onclick="sendAPMsg()">Send</button></div>
+</div>
+
+<script>
+const P={};
+let curAgent='blog';
+const tog=el=>{el.classList.toggle('open');el.nextElementSibling.classList.toggle('open');};
+const apBtn=id=>`<button class="btn" onclick="openAP('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33"/></svg>Chat & settings</button>`;
+
+const agentInfo={
+blog:{n:'Blog Agent',c:'B',color:'var(--purple)',bg:'var(--purple-bg)',bd:'var(--purple-bd)',chat:'I\'m writing "5 onboarding mistakes" — section 3/5. Outline approved by CMO based on 2.3x performance.\n\nWant me to adjust the angle, add examples, or target a different keyword?',
+settings:[{cat:'content',items:[{n:'Article length',d:'Target words',t:'select',o:['1000-1500','1500-2000','2000-2500'],v:1},{n:'Tone',t:'select',o:['Professional','Casual','Technical'],v:0},{n:'Auto-publish',d:'Skip approval after SEO check',t:'toggle',on:false},{n:'Internal linking',t:'toggle',on:true}]},{cat:'distribution',items:[{n:'Auto-send to 小红书',t:'toggle',on:true},{n:'Auto-send to Reddit',t:'toggle',on:true}]}]},
+seo:{n:'SEO Agent',c:'S',color:'var(--green)',bg:'var(--green-bg)',bd:'var(--green-bd)',chat:'Verifying fixes from cycle 4. "saas metrics" dropped #8→#12 — competitor has fresher content. Blog Agent will refresh next week.\n\nWant to add keywords or change scan frequency?',
+settings:[{cat:'scanning',items:[{n:'Frequency',t:'select',o:['Every 3h','Every 6h','Every 12h'],v:1},{n:'Auto-fix safe issues',t:'toggle',on:true},{n:'Auto-fix content',t:'toggle',on:false}]},{cat:'keywords',items:[{n:'Alert threshold',d:'Rank change ±',t:'input',v:'3'},{n:'Track top N',t:'input',v:'50'}],tags:['saas onboarding','reduce churn','saas metrics','user onboarding','product led growth']}]},
+reddit:{n:'Reddit Agent',c:'R',color:'var(--accent)',bg:'var(--accent-bg)',bd:'var(--accent-bd)',chat:'Found high-value thread in r/SaaS — 43↑, rising. Using "personal experience" angle (2.3x engagement). 2 replies awaiting approval.\n\nAdjust reply style or target different subs?',
+settings:[{cat:'monitoring',items:[{n:'Scan frequency',t:'select',o:['Every 15min','Every 30min','Every 1h'],v:1},{n:'Min upvotes',d:'Only engage above',t:'input',v:'5'}],tags:['r/SaaS','r/startups','r/EntrepreneurRideAlong','r/webdev','r/growthacking']},{cat:'reply style',items:[{n:'Max length',t:'input',v:'150w'},{n:'Mention product',t:'toggle',on:false},{n:'Include links',t:'toggle',on:false}]}]},
+xhs:{n:'小红书 Agent',c:'X',color:'var(--pink)',bg:'var(--pink-bg)',bd:'var(--pink-bd)',chat:'Adapting "Pricing mistakes" — slide 4/6. Native Chinese rewrite, not translation.\n\n1 post pending approval. Adjust visual style or schedule?',
+settings:[{cat:'adaptation',items:[{n:'Format',t:'select',o:['6-image carousel','Single image','Video'],v:0},{n:'Language',t:'select',o:['Native rewrite','Translation + polish'],v:0},{n:'Auto-adapt new posts',t:'toggle',on:true}]},{cat:'publishing',items:[{n:'Weekday time',t:'select',o:['7 PM','8 PM','9 PM'],v:1},{n:'Auto-schedule',t:'toggle',on:false}],tags:['#SaaS创业','#产品增长','#用户留存','#一人公司']}]},
+geo:{n:'GEO Agent',c:'G',color:'var(--blue)',bg:'var(--blue-bg)',bd:'var(--blue-bd)',chat:'GEO score: 34/100 (+6). Best visibility on Perplexity (2 citations). Running check on query 3/8.\n\nTarget specific queries or add engines?',
+settings:[{cat:'engines',items:[{n:'Check frequency',t:'select',o:['Every 6h','Every 12h','Daily'],v:1}],tags:['ChatGPT','Claude','Perplexity','Gemini']},{cat:'optimization',items:[{n:'Auto-add schema',t:'toggle',on:true},{n:'Auto-add definitions',t:'toggle',on:true},{n:'Priority engine',t:'select',o:['All equally','Perplexity','ChatGPT'],v:0}]}]}
+};
+
+function renderChat(id){const d=agentInfo[id];return `<div class="cm a"><div class="ca" style="background:${d.bg};color:${d.color};border-color:${d.bd}">${d.c}</div><div class="cb">${d.chat.replace(/\n/g,'<br>')}</div></div>`;}
+function renderSettings(id){const d=agentInfo[id];let h='';d.settings.forEach(s=>{h+=`<div class="sp-label">${s.cat}</div>`;s.items.forEach(it=>{h+=`<div class="sp-row"><div><div class="sp-row-name">${it.n}</div>${it.d?`<div class="sp-row-desc">${it.d}</div>`:''}`;h+=`</div>`;if(it.t==='toggle')h+=`<label class="sp-tog"><input type="checkbox" ${it.on?'checked':''}><span class="sr"></span></label>`;else if(it.t==='select')h+=`<select class="sp-select">${it.o.map((o,i)=>`<option${i===it.v?' selected':''}>${o}</option>`).join('')}</select>`;else if(it.t==='input')h+=`<input class="sp-input-sm" value="${it.v}">`;h+=`</div>`;});if(s.tags)h+=`<div class="sp-tags">${s.tags.map(t=>`<span class="sp-tag">${t}</span>`).join('')}<span class="sp-tag add">+ add</span></div>`;});return h;}
+
+function openCMO(){document.getElementById('cmo-ov').classList.add('open');document.getElementById('cmo-pn').classList.add('open');}
+function closeCMO(){document.getElementById('cmo-ov').classList.remove('open');document.getElementById('cmo-pn').classList.remove('open');}
+function sendCMOMsg(){const i=document.getElementById('cmo-in');const t=i.value.trim();if(!t)return;const b=document.getElementById('cmo-body');b.innerHTML+=`<div class="cm u"><div class="ca" style="background:var(--bg3);color:var(--text3);border-color:var(--border)">JD</div><div class="cb">${t}</div></div>`;i.value='';setTimeout(()=>{b.innerHTML+=`<div class="cm a"><div class="ca" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">C</div><div class="cb">Got it. Adjusting the plan — changes will show in tomorrow's brief.</div></div>`;b.scrollTop=99999;},500);b.scrollTop=99999;}
+
+function openAP(id){curAgent=id;const d=agentInfo[id];document.getElementById('ap-title').innerHTML=`<span class="pic" style="background:${d.bg};color:${d.color};border-color:${d.bd}">${d.c}</span>${d.n}`;document.getElementById('apt-chat').classList.add('ac');document.getElementById('apt-set').classList.remove('ac');document.getElementById('ap-body').innerHTML=renderChat(id);document.getElementById('ap-ia').style.display='flex';document.getElementById('ap-ov').classList.add('open');document.getElementById('ap-pn').classList.add('open');}
+function closeAP(){document.getElementById('ap-ov').classList.remove('open');document.getElementById('ap-pn').classList.remove('open');}
+function apTab(t){document.getElementById('apt-chat').classList.toggle('ac',t==='chat');document.getElementById('apt-set').classList.toggle('ac',t==='settings');if(t==='chat'){document.getElementById('ap-body').innerHTML=renderChat(curAgent);document.getElementById('ap-ia').style.display='flex';}else{document.getElementById('ap-body').innerHTML=renderSettings(curAgent);document.getElementById('ap-ia').style.display='none';}}
+const agentReplies={
+blog:['On it — I\'ll adjust the article angle and update you when section 4 is done.','Good call. Rewriting with that focus. Outline will be updated in 5 min.','Got it. I\'ll weave that into the draft and flag it for your review.'],
+seo:['Running a fresh scan now. I\'ll update the rankings report in a few minutes.','Noted. Adding that keyword to the tracking list — first results in 6h.','Good idea. I\'ll prioritize that fix in the next cycle.'],
+reddit:['Adjusting my reply style. Next draft will use that approach.','Found 3 new threads matching that criteria. Drafting replies now.','Understood. I\'ll focus on those subreddits and skip the lower-value ones.'],
+xhs:['收到！下一篇会调整这个风格。I\'ll have a new draft in 20 min.','好的，调整排版和封面设计中。Will notify when ready.','Got it. Switching to that format for the next 3 posts.'],
+geo:['Re-checking visibility now. Updated scores in ~10 min.','Adding that query to monitoring. First check runs in the next cycle.','Understood. I\'ll prioritize that engine and adjust content signals.']
+};
+function sendAPMsg(){const i=document.getElementById('ap-in');const t=i.value.trim();if(!t)return;const d=agentInfo[curAgent];const b=document.getElementById('ap-body');b.innerHTML+=`<div class="cm u"><div class="ca" style="background:var(--bg3);color:var(--text3);border-color:var(--border)">JD</div><div class="cb">${t}</div></div>`;i.value='';const replies=agentReplies[curAgent]||['Understood. I\'ll adjust on my next run.'];const reply=replies[Math.floor(Math.random()*replies.length)];setTimeout(()=>{b.innerHTML+=`<div class="cm a"><div class="ca" style="background:${d.bg};color:${d.color};border-color:${d.bd}">${d.c}</div><div class="cb">${reply}</div></div>`;b.scrollTop=99999;},600);b.scrollTop=99999;}
+
+// ===================== PAGES =====================
+P.home=`
+<div class="ph"><div class="pt"><h1>Home</h1><div class="ptag">daily brief</div></div><div class="pa"><button class="btn" onclick="openCMO()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Talk to CMO</button></div></div>
+<div class="pc">
+
+<div class="date-header fi"><span class="dh-day">Thursday</span>March 20, 2026</div>
+
+<div class="status fi" style="background:var(--yellow-bg);border-color:var(--yellow-bd);"><div class="sd" style="background:var(--yellow);"></div><div class="sm" style="color:var(--yellow);">3 items + 1 decision</div><div class="sdate">updated 9:00 AM</div></div>
+
+<div class="chips fi f1"><div class="chip"><span class="cv">2,680</span><span class="cl">visits</span><span class="cd" style="color:var(--green)">+22%</span></div><div class="chip"><span class="cv">#11</span><span class="cl">rank</span><span class="cd" style="color:var(--text4)">hold</span></div><div class="chip"><span class="cv">34</span><span class="cl">GEO</span><span class="cd" style="color:var(--green)">+6</span></div><div class="chip"><span class="cv">68</span><span class="cl">health</span><span class="cd" style="color:var(--green)">+4</span></div></div>
+
+<div class="cmo-line fi f1">Onboarding content outperforming everything by <strong>2.3x</strong>. Doubling down.</div>
+
+<div class="sl fi f1">today's work</div>
+<div class="wp fi f1">
+<div class="wp-item"><div class="wp-agent"><div class="wp-dot" style="background:var(--purple);"></div><div class="wp-name">Blog</div></div><div class="wp-bar-w"><div class="wp-bar-f" style="width:67%;background:var(--green);"></div></div><div class="wp-stat"><b>2</b>/3 articles</div><div style="font-size:9px;color:var(--text4);margin-top:2px;">1 writing, 1 pending</div></div>
+<div class="wp-item"><div class="wp-agent"><div class="wp-dot" style="background:var(--green);"></div><div class="wp-name">SEO</div></div><div class="wp-bar-w"><div class="wp-bar-f" style="width:100%;background:var(--green);"></div></div><div class="wp-stat"><b>18</b> fixes this week</div><div style="font-size:9px;color:var(--text4);margin-top:2px;">3 fixed today</div></div>
+<div class="wp-item"><div class="wp-agent"><div class="wp-dot" style="background:var(--accent);"></div><div class="wp-name">Reddit</div></div><div class="wp-bar-w"><div class="wp-bar-f" style="width:50%;background:var(--yellow);"></div></div><div class="wp-stat"><b>2</b>/4 replies</div><div style="font-size:9px;color:var(--yellow);margin-top:2px;">2 pending approval</div></div>
+<div class="wp-item"><div class="wp-agent"><div class="wp-dot" style="background:var(--pink);"></div><div class="wp-name">小红书</div></div><div class="wp-bar-w"><div class="wp-bar-f" style="width:67%;background:var(--yellow);"></div></div><div class="wp-stat"><b>2</b>/3 posts</div><div style="font-size:9px;color:var(--yellow);margin-top:2px;">1 pending approval</div></div>
+<div class="wp-item"><div class="wp-agent"><div class="wp-dot" style="background:var(--blue);"></div><div class="wp-name">GEO</div></div><div class="wp-bar-w"><div class="wp-bar-f" style="width:38%;background:var(--accent);"></div></div><div class="wp-stat">query <b>3</b>/8</div><div style="font-size:9px;color:var(--accent);margin-top:2px;">checking Perplexity</div></div>
+</div>
+
+<div class="sl fi f2">approve</div>
+<div class="card fi f2"><div class="card-h"><div class="card-ico" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);">B</div><div class="card-info"><div class="card-title">"5 onboarding mistakes killing retention"</div><div class="card-sub">1,800 words · saas onboarding best practices (1.2K/mo)</div></div><div class="card-act"><button class="bp btn" style="padding:6px 14px;">Approve</button></div></div><div class="tg" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>why · preview · edit</div><div class="td"><strong>Reasoning:</strong> Keyword difficulty 34. Competitor #3 has 1,200 words — we wrote 1,800 with 2026 data. CMO assigned based on 2.3x onboarding performance.</div></div>
+<div class="card fi f2"><div class="card-h"><div class="card-ico" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">R</div><div class="card-info"><div class="card-title">Reddit reply — r/SaaS churn thread</div><div class="card-sub" style="color:var(--yellow);">43 upvotes · rising · time-sensitive</div></div><div class="card-act"><span class="card-priority" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">urgent</span><button class="bp btn" style="padding:6px 14px;">Post</button></div></div><div class="tg" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>draft · edit</div><div class="td"><strong>Draft:</strong> "We hit the same wall — most churn in first 48h. A 3-step Day 1 checklist cut 7-day churn by half."<br><br><strong>Why:</strong> Highly relevant, rising fast, helpful tone.</div></div>
+<div class="card fi f3"><div class="card-h"><div class="card-ico" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd);">X</div><div class="card-info"><div class="card-title">「SaaS用户留存的5个致命错误」</div><div class="card-sub">小红书 · 6-image carousel · 8PM Beijing</div></div><div class="card-act"><button class="bp btn" style="padding:6px 14px;">Approve</button></div></div></div>
+<div class="approve-all fi f3"><button class="bs btn" style="padding:8px 28px;">Approve all 3</button></div>
+
+<div class="sl fi f3">decision</div>
+<div class="card card-decision fi f3"><div class="card-h"><div class="card-ico" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);">C</div><div class="card-info"><div class="card-title">Shift to 40% onboarding content?</div><div class="card-sub">Currently 20% — onboarding drives 2.3x more traffic</div></div></div><div class="decision-chart"><div class="decision-bar" style="height:8px;background:var(--bg4);" title="Pricing"></div><div class="decision-bar" style="height:12px;background:var(--bg4);" title="SEO"></div><div class="decision-bar" style="height:10px;background:var(--bg4);" title="Churn"></div><div class="decision-bar" style="height:28px;background:var(--purple);" title="Onboarding"></div><div style="font-family:var(--mono);font-size:9px;color:var(--purple);margin-left:6px;align-self:center;font-weight:600;">2.3x</div></div><div style="display:flex;gap:6px;padding:0 16px 14px;"><button class="bp btn" style="padding:6px 16px;">Yes, do it</button><button class="btn" style="padding:6px 16px;" onclick="openCMO()">Discuss</button></div></div>
+
+<div class="sl fi f3">activity</div>
+<div class="act-card fi f3">
+<div class="act-item act-preview"><div class="act-dot" style="background:var(--purple);animation:pulse 1.5s infinite;"></div><div class="act-text"><strong>Blog</strong> writing "5 onboarding mistakes" — section 3/5 <span class="cur"></span></div><div class="act-time">now</div></div>
+<div class="act-item act-preview"><div class="act-dot" style="background:var(--green);"></div><div class="act-text"><strong>Blog</strong> published "Pricing page mistakes"</div><div class="act-time">2h</div></div>
+<div class="act-h" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg><div class="act-cnt">6 more actions</div><div class="act-live">today</div></div><div class="act-body">
+<div class="act-item"><div class="act-dot" style="background:var(--green);"></div><div class="act-text"><strong>SEO</strong> fixed alt text + meta descriptions</div><div class="act-time">4h</div></div>
+<div class="act-item"><div class="act-dot" style="background:var(--blue);"></div><div class="act-text"><strong>Reddit</strong> found 2 threads → drafted replies</div><div class="act-time">5h</div></div>
+<div class="act-item"><div class="act-dot" style="background:var(--yellow);"></div><div class="act-text"><strong>SEO</strong> ranking drop: "saas metrics" #8→#12</div><div class="act-time">yday</div></div>
+</div></div></div>`;
+
+P.approve=`
+<div class="ph"><div class="pt"><h1>Approve</h1><div class="ptag">3 items</div></div></div>
+<div class="pc">
+<div class="card fi"><div class="card-h"><div class="card-ico" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);">B</div><div class="card-info"><div class="card-title">"5 onboarding mistakes killing retention"</div><div class="card-sub">Blog · 1,800 words · "saas onboarding best practices"</div></div><div class="card-act"><button class="bp btn">Approve</button><button class="btn">Preview</button><button class="btn">Edit</button></div></div><div class="tg" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>reasoning</div><div class="td"><strong>CMO assigned:</strong> Onboarding drives 2.3x traffic. Difficulty 34, competitor at #3. 3 internal links.</div></div>
+<div class="card fi f1"><div class="card-h"><div class="card-ico" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">R</div><div class="card-info"><div class="card-title">Reddit — r/SaaS churn thread</div><div class="card-sub" style="color:var(--yellow);">43↑ · rising · 3h</div></div><div class="card-act"><button class="bp btn">Post</button><button class="btn">Edit</button></div></div></div>
+<div class="card fi f2"><div class="card-h"><div class="card-ico" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd);">X</div><div class="card-info"><div class="card-title">「SaaS用户留存的5个致命错误」</div><div class="card-sub">小红书 · 6 images · 8PM Beijing</div></div><div class="card-act"><button class="bp btn">Approve</button><button class="btn">Preview</button></div></div></div>
+<div style="position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 0;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;color:var(--text4)">3 pending</span><button class="bs btn" style="padding:8px 24px;">Approve all 3</button></div></div>`;
+
+P.content=`<div class="ph"><div class="pt"><h1>Content</h1><div class="ptag">library</div></div><div class="pa"><button class="btn">Upload</button></div></div><div class="pc"><div class="tabs"><div class="tab ac">All (41)</div><div class="tab">Blog (8)</div><div class="tab">Social (24)</div><div class="tab">Reddit (6)</div><div class="tab">小红书 (3)</div></div><table class="tbl fi"><thead><tr><th>Content</th><th>Channels</th><th>Views</th><th>Status</th></tr></thead><tbody><tr><td class="tn">Why your pricing page is losing customers</td><td><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">blog</span><span class="ch" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd)">reddit</span><span class="ch" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd)">小红书</span></td><td class="mn">847</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">published</span></td></tr><tr><td class="tn">The onboarding mistake that costs 40% of users</td><td><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">blog</span><span class="ch" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd)">小红书</span></td><td class="mn">1,230</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">published</span></td></tr><tr><td class="tn">5 onboarding mistakes killing retention</td><td><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">blog</span></td><td class="mn" style="color:var(--text4)">—</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">pending</span></td></tr></tbody></table></div>`;
+
+P.knowledge=`<div class="ph"><div class="pt"><h1>Knowledge</h1><div class="ptag">base</div></div><div class="pa"><button class="btn">Upload document</button></div></div><div class="pc"><div class="tabs" id="know-tabs"><div class="tab ac" onclick="knowTab(this,'kb')">Brand voice</div><div class="tab" onclick="knowTab(this,'kp')">Product</div><div class="tab" onclick="knowTab(this,'ka')">Audience</div><div class="tab" onclick="knowTab(this,'kc')">Competitors</div><div class="tab" onclick="knowTab(this,'kd')">Documents</div></div>
+<div id="kb"><div class="two"><div><div class="sl">brand voice</div><div class="card"><div style="padding:16px;"><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"><span class="ch" style="background:var(--bg3);color:var(--text2);border-color:var(--border2);padding:3px 8px;">Professional</span><span class="ch" style="background:var(--bg3);color:var(--text2);border-color:var(--border2);padding:3px 8px;">Technical</span><span class="ch" style="background:var(--bg3);color:var(--text2);border-color:var(--border2);padding:3px 8px;">Concise</span></div><div style="font-size:12px;color:var(--text2);padding:10px 12px;background:var(--bg2);border-radius:var(--r);line-height:1.6;margin-bottom:10px;"><span style="font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:600;">SAMPLE</span><br>"Your onboarding flow has a 40% drop-off. Here's the data — and three changes you can ship this week."</div><button class="btn" style="font-size:11px;">Edit voice</button></div></div></div><div><div class="sl">tone rules</div><div class="card"><div style="padding:16px;font-size:12px;color:var(--text2);line-height:1.8;"><strong>Do:</strong> Use data, be actionable, short sentences<br><strong>Don't:</strong> Hype words, vague claims, jargon<br><strong>Format:</strong> Lead with insight, follow with proof</div></div></div></div></div>
+<div id="kp" style="display:none"><div class="card"><div style="padding:16px;font-size:12px;color:var(--text2);line-height:2;"><div style="font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:600;">PRODUCT</div><span style="font-weight:600;color:var(--text);">YourProduct</span> — SaaS analytics for onboarding optimization<br><div style="font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:600;margin-top:6px;">CATEGORY</div>Product analytics · User onboarding · Retention<br><div style="font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:600;margin-top:6px;">KEY FEATURES</div>Funnel analysis · Cohort tracking · A/B testing · User journeys<br><div style="font-family:var(--mono);font-size:9px;color:var(--text4);font-weight:600;margin-top:6px;">PRICING</div>Free tier · Pro $49/mo · Team $149/mo<br><div style="margin-top:10px;"><button class="btn" style="font-size:11px;">Edit</button></div></div></div></div>
+<div id="ka" style="display:none"><div class="two"><div><div class="sl">primary audience</div><div class="card"><div style="padding:16px;font-size:12px;color:var(--text2);line-height:1.8;"><strong>Who:</strong> SaaS founders & PMs<br><strong>Stage:</strong> B2B, $5-50K MRR<br><strong>Pain:</strong> High churn in first 7 days<br><strong>Goal:</strong> Improve onboarding conversion</div></div></div><div><div class="sl">channels</div><div class="card"><div style="padding:16px;font-size:12px;color:var(--text2);line-height:1.8;"><strong>Primary:</strong> Google search, Reddit (r/SaaS, r/startups)<br><strong>Secondary:</strong> 小红书, Product Hunt<br><strong>Content pref:</strong> Data-driven blog posts, case studies</div></div></div></div></div>
+<div id="kc" style="display:none"><table class="tbl"><thead><tr><th>Competitor</th><th>Positioning</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td class="tn">Mixpanel</td><td style="font-size:11px;color:var(--text2)">Enterprise analytics</td><td style="font-size:11px;color:var(--text2)">Brand, integrations</td><td style="font-size:11px;color:var(--text2)">Complex, expensive</td></tr><tr><td class="tn">Amplitude</td><td style="font-size:11px;color:var(--text2)">Product analytics</td><td style="font-size:11px;color:var(--text2)">ML features</td><td style="font-size:11px;color:var(--text2)">Steep learning curve</td></tr><tr><td class="tn">PostHog</td><td style="font-size:11px;color:var(--text2)">Open-source analytics</td><td style="font-size:11px;color:var(--text2)">Dev community, free tier</td><td style="font-size:11px;color:var(--text2)">Less polished UI</td></tr></tbody></table></div>
+<div id="kd" style="display:none"><table class="tbl"><thead><tr><th>Document</th><th>Type</th><th>Uploaded</th><th>Used by</th></tr></thead><tbody><tr><td class="tn">Brand Guidelines v2.pdf</td><td class="mn">PDF</td><td class="mn">Mar 15</td><td style="font-size:10px"><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">Blog</span><span class="ch" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd)">小红书</span></td></tr><tr><td class="tn">Product Roadmap Q2.md</td><td class="mn">Markdown</td><td class="mn">Mar 12</td><td style="font-size:10px"><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">Blog</span></td></tr><tr><td class="tn">Case Study — Acme Corp.pdf</td><td class="mn">PDF</td><td class="mn">Mar 8</td><td style="font-size:10px"><span class="ch" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd)">Reddit</span></td></tr></tbody></table></div>
+</div>`;
+
+P.insights=`<div class="ph"><div class="pt"><h1>Insights</h1><div class="ptag">analytics</div></div><div class="pa"><button class="btn">Export</button></div></div><div class="pc"><div class="tabs" id="insights-tabs"><div class="tab ac" onclick="insightTab(this,'io')">Overview</div><div class="tab" onclick="insightTab(this,'is')">SEO</div><div class="tab" onclick="insightTab(this,'ig')">GEO</div><div class="tab" onclick="insightTab(this,'ic')">Content</div><div class="tab" onclick="insightTab(this,'ix')">Competitors</div></div>
+<div id="io"><div class="mrow fi" style="grid-template-columns:repeat(3,1fr);"><div class="met"><div class="ml">Visits (30d)</div><div class="mv">8,740</div><div class="md" style="color:var(--green);">+24%</div></div><div class="met"><div class="ml">Organic share</div><div class="mv">67%</div><div class="md" style="color:var(--green);">+8pp</div></div><div class="met"><div class="ml">Top 20 keywords</div><div class="mv">14</div><div class="md" style="color:var(--green);">+3</div></div></div>
+<div class="sl fi f1">health score</div><div class="card fi f1"><div style="padding:18px;display:flex;gap:18px;align-items:flex-start;"><div style="width:60px;height:60px;border-radius:50%;border:3px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:700;flex-shrink:0;">68</div><div style="flex:1;"><div class="hb"><div class="hl">Value prop</div><div class="ht"><div class="hf" style="width:85%;background:var(--green)"></div></div><div class="hs">85%</div></div><div class="hb"><div class="hl">CTA</div><div class="ht"><div class="hf" style="width:53%;background:var(--yellow)"></div></div><div class="hs">53%</div></div><div class="hb"><div class="hl">Trust</div><div class="ht"><div class="hf" style="width:40%;background:var(--red)"></div></div><div class="hs">40%</div></div><div class="hb"><div class="hl">Pricing</div><div class="ht"><div class="hf" style="width:60%;background:var(--yellow)"></div></div><div class="hs">60%</div></div><div class="hb"><div class="hl">Competitors</div><div class="ht"><div class="hf" style="width:65%;background:var(--yellow)"></div></div><div class="hs">65%</div></div><div class="hb"><div class="hl">Performance</div><div class="ht"><div class="hf" style="width:90%;background:var(--green)"></div></div><div class="hs">90%</div></div><div class="hb"><div class="hl">SEO</div><div class="ht"><div class="hf" style="width:80%;background:var(--green)"></div></div><div class="hs">80%</div></div></div></div></div>
+<div class="sl fi f2">top keywords</div><table class="tbl fi f2"><thead><tr><th>Keyword</th><th>Rank</th><th>Change</th><th>Volume</th></tr></thead><tbody><tr><td class="tn">saas onboarding best practices</td><td class="mn">#11</td><td class="mn" style="color:var(--green);">+3</td><td class="mn" style="color:var(--text3);">1.2K</td></tr><tr><td class="tn">reduce saas churn</td><td class="mn">#18</td><td class="mn" style="color:var(--green);">+5</td><td class="mn" style="color:var(--text3);">880</td></tr><tr style="background:var(--red-bg);"><td class="tn" style="color:var(--red);">saas metrics dashboard</td><td class="mn">#12</td><td class="mn" style="color:var(--red);">-4</td><td class="mn" style="color:var(--text3);">1.5K</td></tr></tbody></table></div>
+<div id="is" style="display:none"><div class="mrow fi" style="grid-template-columns:repeat(4,1fr);"><div class="met"><div class="ml">Indexed pages</div><div class="mv">42</div></div><div class="met"><div class="ml">Avg position</div><div class="mv">14.2</div><div class="md" style="color:var(--green);">+1.8</div></div><div class="met"><div class="ml">Backlinks</div><div class="mv">127</div></div><div class="met"><div class="ml">Core Web Vitals</div><div class="mv" style="color:var(--green);">Pass</div></div></div><div class="sl">technical health</div><table class="tbl"><thead><tr><th>Issue</th><th>Pages</th><th>Status</th></tr></thead><tbody><tr><td class="tn">Missing alt text</td><td class="mn">4</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">fixed</span></td></tr><tr><td class="tn">Duplicate meta descriptions</td><td class="mn">2</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">fixed</span></td></tr><tr><td class="tn">Slow pages (>3s)</td><td class="mn">1</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">monitoring</span></td></tr></tbody></table></div>
+<div id="ig" style="display:none"><div class="mrow fi" style="grid-template-columns:repeat(4,1fr);"><div class="met"><div class="ml">GEO score</div><div class="mv">34<span style="font-size:12px;color:var(--text3)">/100</span></div><div class="md" style="color:var(--green);">+6</div></div><div class="met"><div class="ml">Engines tracked</div><div class="mv">4</div></div><div class="met"><div class="ml">Mentions (7d)</div><div class="mv">12</div></div><div class="met"><div class="ml">Citations</div><div class="mv">3</div></div></div><div class="sl">AI engine visibility</div><table class="tbl"><thead><tr><th>Engine</th><th>Score</th><th>Mentions</th><th>Citations</th></tr></thead><tbody><tr><td class="tn">Perplexity</td><td class="mn" style="color:var(--blue);">42</td><td class="mn">4</td><td class="mn">2</td></tr><tr><td class="tn">ChatGPT</td><td class="mn">35</td><td class="mn">5</td><td class="mn">1</td></tr><tr><td class="tn">Claude</td><td class="mn">30</td><td class="mn">1</td><td class="mn">0</td></tr><tr><td class="tn">Gemini</td><td class="mn">28</td><td class="mn">2</td><td class="mn">0</td></tr></tbody></table></div>
+<div id="ic" style="display:none"><div class="mrow fi" style="grid-template-columns:repeat(3,1fr);"><div class="met"><div class="ml">Published (30d)</div><div class="mv">14</div></div><div class="met"><div class="ml">Total views</div><div class="mv">4,230</div><div class="md" style="color:var(--green);">+32%</div></div><div class="met"><div class="ml">Avg engagement</div><div class="mv">4.2%</div></div></div><div class="sl">top performing</div><table class="tbl"><thead><tr><th>Content</th><th>Channel</th><th>Views</th><th>Eng. rate</th></tr></thead><tbody><tr><td class="tn">The onboarding mistake that costs 40%</td><td><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">blog</span></td><td class="mn">1,230</td><td class="mn" style="color:var(--green);">6.1%</td></tr><tr><td class="tn">「为什么前48小时最关键」</td><td><span class="ch" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd)">小红书</span></td><td class="mn">—</td><td class="mn" style="color:var(--green);">7.4%</td></tr><tr><td class="tn">Pricing page mistakes</td><td><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">blog</span></td><td class="mn">847</td><td class="mn">3.8%</td></tr></tbody></table></div>
+<div id="ix" style="display:none"><div class="sl">competitor tracking</div><table class="tbl"><thead><tr><th>Competitor</th><th>Domain rating</th><th>Keywords overlap</th><th>Content gap</th></tr></thead><tbody><tr><td class="tn">Mixpanel</td><td class="mn">82</td><td class="mn">8 / 23</td><td class="mn" style="color:var(--accent);">12 topics</td></tr><tr><td class="tn">Amplitude</td><td class="mn">78</td><td class="mn">6 / 23</td><td class="mn" style="color:var(--accent);">9 topics</td></tr><tr><td class="tn">PostHog</td><td class="mn">65</td><td class="mn">11 / 23</td><td class="mn" style="color:var(--yellow);">5 topics</td></tr></tbody></table><div class="sl" style="margin-top:16px;">recent moves</div><div class="card"><div style="padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7;"><strong>Mixpanel</strong> published 3 onboarding articles last week. Their "saas metrics" page was refreshed — caused our #8→#12 drop.<br><strong>PostHog</strong> active on r/SaaS with product comparisons.</div></div></div>
+</div>`;
+
+// ===== AGENT PAGES =====
+P.blog=`
+<div class="ph"><div class="pt"><h1><span class="back back-arrow" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Team</span> / Blog Agent</h1></div><div class="pa">${apBtn('blog')}<button class="btn">Request article</button></div></div>
+<div class="pc">
+<div class="ah fi"><div class="ah-icon" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);">B</div><div><div class="ah-name">Blog Agent</div><div class="ah-desc">Long-form SEO articles, content refresh, internal linking</div></div><div class="ah-st" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">writing</div></div>
+<div class="mrow fi f1"><div class="met"><div class="ml">Articles</div><div class="mv">8</div></div><div class="met"><div class="ml">Total views</div><div class="mv">3,028</div></div><div class="met"><div class="ml">Avg views</div><div class="mv">378</div></div><div class="met"><div class="ml">In progress</div><div class="mv">1</div></div></div>
+<div class="pipeline fi f1"><div class="pipeline-title"><div class="ld"></div>Current — "5 onboarding mistakes killing retention"</div><div class="pipe-row"><div class="pipe-label"><div class="pipe-label-name">Writing</div><div class="pipe-label-freq">Started 1h ago</div></div><div class="pipe-track"><div class="pipe-line"></div><div class="pipe-fill" style="width:45%;background:var(--green);"></div><div class="pipe-nodes"><div class="nd done"><div class="ps2" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">Research</div></div><div class="nd done"><div class="ps2" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">Outline</div></div><div class="nd active"><div class="ps2" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">Writing...</div></div><div class="nd"><div class="ps2" style="background:var(--surface);color:var(--text4);border-color:var(--border);">SEO</div></div><div class="nd"><div class="ps2" style="background:var(--surface);color:var(--text4);border-color:var(--border);">Review</div></div></div></div></div></div>
+<div class="live fi f2"><div class="live-h"><div class="ld" style="background:var(--accent);"></div><div class="lt">Live — Writing section 3/5</div><div class="ls">785 / 1,800 words</div></div><div class="live-b">
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">1</div><div class="lstep-n">Research</div><div class="lstep-t">12 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v">Analyzed top 10 for "saas onboarding best practices"</span></div><div class="lo"><span class="p">></span><span class="v ok">Gap: No 2026 data. No actionable checklists.</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">2</div><div class="lstep-n">Outline</div><div class="lstep-t">8 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v hl">5 sections, 1,800 words</span></div><div class="lo"><span class="p">></span><span class="v ok">Approved by CMO</span></div></div></div>
+<div class="lstep active"><div class="lstep-h"><div class="lstep-ic r">3</div><div class="lstep-n">Writing — "Ignoring the first 48 hours"</div><div class="lstep-t">now</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">Section 1 (320w) + Section 2 (295w) done</span></div><div class="lo"><span class="p">></span><span class="v str">The first 48 hours after signup are when you'll lose most users. Those who don't reach their "aha moment" within 48h have a 67% chance of churning<span class="cur"></span></span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic p">4</div><div class="lstep-n">SEO optimization</div><div class="lstep-t">pending</div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic p">5</div><div class="lstep-n">Submit for review</div><div class="lstep-t">pending</div></div></div>
+</div></div>
+<div class="sl fi f2">all articles</div>
+<table class="tbl fi f3"><thead><tr><th>Article</th><th>Status</th><th>Words</th><th>Views</th></tr></thead><tbody>
+<tr style="background:var(--accent-bg);"><td class="tn">5 onboarding mistakes killing retention</td><td><span class="tag" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">writing</span></td><td class="mn">785/1800</td><td class="mn" style="color:var(--text4)">—</td></tr>
+<tr style="background:var(--yellow-bg);"><td class="tn">Why your pricing page is losing customers</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd);">pending</span></td><td class="mn">1,650</td><td><button class="bp btn" style="padding:4px 10px;font-size:10px;">Approve</button></td></tr>
+<tr><td class="tn">The onboarding mistake that costs 40% of users</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">published</span></td><td class="mn">1,920</td><td class="mn">1,230</td></tr>
+<tr><td class="tn">How we reduced churn by 50%</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">published</span></td><td class="mn">1,480</td><td class="mn">562</td></tr>
+</tbody></table></div>`;
+
+P.seo=`
+<div class="ph"><div class="pt"><h1><span class="back back-arrow" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Team</span> / SEO Agent</h1></div><div class="pa">${apBtn('seo')}<button class="btn">Add keywords</button><button class="btn">Run scan</button></div></div>
+<div class="pc">
+<div class="ah fi"><div class="ah-icon" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">S</div><div><div class="ah-name">SEO Agent</div><div class="ah-desc">Technical SEO audits, keyword tracking, on-page optimization</div></div><div class="ah-st" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">running</div></div>
+<div class="mrow fi f1"><div class="met"><div class="ml">Keywords</div><div class="mv">23</div></div><div class="met"><div class="ml">Fixed (7d)</div><div class="mv">18</div></div><div class="met"><div class="ml">Rank change</div><div class="mv" style="color:var(--green);">+2.3</div></div><div class="met"><div class="ml">Issues</div><div class="mv">2</div></div></div>
+<div class="pipeline fi f1"><div class="pipeline-title"><div class="ld"></div>Recurring tasks</div><div class="pipe-row" style="margin-bottom:28px;"><div class="pipe-label"><div class="pipe-label-name">Technical scan</div><div class="pipe-label-freq">Every 6 hours</div></div><div class="pipe-track"><div class="pipe-line"></div><div class="pipe-fill" style="width:75%;background:var(--green);"></div><div class="pipe-nodes"><div class="nd done"></div><div class="nd done"></div><div class="nd done"></div><div class="nd active"><div class="ps2" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">Verify...</div></div></div></div></div><div class="pipe-row" style="margin-bottom:28px;"><div class="pipe-label"><div class="pipe-label-name">Keywords</div><div class="pipe-label-freq">Daily</div></div><div class="pipe-track"><div class="pipe-line"></div><div class="pipe-fill" style="width:100%;background:var(--green);"></div><div class="pipe-nodes"><div class="nd done"></div><div class="nd done"></div><div class="nd done"></div><div class="nd done"><div class="ps2" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">Done</div></div></div></div></div><div class="pipe-row"><div class="pipe-label"><div class="pipe-label-name">Rank monitor</div><div class="pipe-label-freq">Continuous</div></div><div class="pipe-track"><div class="pipe-line"></div><div class="pipe-fill" style="width:60%;background:var(--green);"></div><div class="pipe-nodes"><div class="nd done"></div><div class="nd done"></div><div class="nd active"><div class="ps2" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">Monitoring</div></div><div class="nd err"><div class="ps2" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd);">-4 drop</div></div></div></div></div></div>
+<div class="live fi f2"><div class="live-h"><div class="ld" style="background:var(--green);"></div><div class="lt">Live — Verifying fixes</div><div class="ls">cycle 4</div></div><div class="live-b">
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">1</div><div class="lstep-n">Crawl 42 pages</div><div class="lstep-t">3 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">42/42 OK. No 404s.</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">2</div><div class="lstep-n">3 issues found</div><div class="lstep-t">2 min</div></div><div class="lstep-o"><div class="lo"><span class="p">1.</span><span class="v ok">Alt text (4 imgs) → fixed</span></div><div class="lo"><span class="p">2.</span><span class="v ok">Duplicate meta → fixed</span></div><div class="lo"><span class="p">3.</span><span class="v w">"saas metrics" #8→#12 → refresh needed</span></div></div></div>
+<div class="lstep active"><div class="lstep-h"><div class="lstep-ic r">3</div><div class="lstep-n">Verifying</div><div class="lstep-t">now</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v str">Re-crawling affected pages<span class="cur"></span></span></div></div></div>
+</div></div>
+<div class="sl fi f2">keyword rankings</div>
+<table class="tbl fi f3"><thead><tr><th>Keyword</th><th>Rank</th><th>Change</th><th>Volume</th><th>Page</th></tr></thead><tbody>
+<tr><td class="tn">saas onboarding best practices</td><td class="mn">#11</td><td class="mn" style="color:var(--green);">+3</td><td class="mn" style="color:var(--text3);">1.2K</td><td style="font-size:10px;color:var(--text4);">/blog/onboarding</td></tr>
+<tr><td class="tn">reduce saas churn</td><td class="mn">#18</td><td class="mn" style="color:var(--green);">+5</td><td class="mn" style="color:var(--text3);">880</td><td style="font-size:10px;color:var(--text4);">/blog/reduce-churn</td></tr>
+<tr style="background:var(--red-bg);"><td class="tn" style="color:var(--red);">saas metrics dashboard</td><td class="mn">#12</td><td class="mn" style="color:var(--red);">-4</td><td class="mn" style="color:var(--text3);">1.5K</td><td style="font-size:10px;color:var(--text4);">/blog/metrics</td></tr>
+</tbody></table></div>`;
+
+P.reddit=`
+<div class="ph"><div class="pt"><h1><span class="back back-arrow" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Team</span> / Reddit Agent</h1></div><div class="pa">${apBtn('reddit')}</div></div>
+<div class="pc">
+<div class="ah fi"><div class="ah-icon" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);">R</div><div><div class="ah-name">Reddit Agent</div><div class="ah-desc">Subreddit monitoring, reply drafting, community engagement</div></div><div class="ah-st" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd);">2 pending</div></div>
+<div class="mrow fi f1"><div class="met"><div class="ml">Subreddits</div><div class="mv">5</div></div><div class="met"><div class="ml">Replies (7d)</div><div class="mv">4</div></div><div class="met"><div class="ml">Avg upvotes</div><div class="mv">11</div></div><div class="met"><div class="ml">Referrals</div><div class="mv">23</div></div></div>
+<div class="two fi f1"><div>
+<div class="sl">pending approval</div>
+<div class="thread" style="border-color:var(--accent-bd);"><div class="thread-sub">r/SaaS</div><div class="thread-title">"Best tools for reducing user churn?"</div><div class="thread-meta"><span>43↑</span><span>12 comments</span><span>3h ago</span><span style="color:var(--accent)">rising</span></div><div style="font-family:var(--mono);font-size:8px;color:var(--text4);font-weight:600;margin-bottom:4px;">DRAFT REPLY</div><div class="thread-reply">"We hit the same wall — most churn happened in the first 48 hours. A 3-step checklist on Day 1 cut our 7-day churn by almost half."</div><div class="thread-acts"><button class="bp btn">Approve & post</button><button class="btn">Edit</button><button class="btn" style="color:var(--text4)">Skip</button></div></div>
+<div class="thread" style="border-color:var(--accent-bd);"><div class="thread-sub">r/startups</div><div class="thread-title">"How do you track if onboarding works?"</div><div class="thread-meta"><span>12↑</span><span>5 comments</span><span>6h ago</span></div><div style="font-family:var(--mono);font-size:8px;color:var(--text4);font-weight:600;margin-bottom:4px;">DRAFT REPLY</div><div class="thread-reply">"The metric that changed everything: 'time to first value.' Not DAU — how fast a user gets to 'oh, this is useful.'"</div><div class="thread-acts"><button class="bp btn">Approve & post</button><button class="btn">Edit</button></div></div>
+<div class="sl">posted</div>
+<div class="thread" style="opacity:.55;"><div class="thread-sub">r/SaaS</div><div class="thread-title">"Best analytics for early-stage?"</div><div class="thread-meta"><span>posted 3h ago</span></div><div class="thread-perf"><span class="up">12↑</span><span>4 clicks</span></div></div>
+</div><div>
+<div class="sl">live — latest scan</div>
+<div class="live" style="margin-bottom:0;"><div class="live-h"><div class="ld" style="background:var(--accent);"></div><div class="lt">r/SaaS scan</div><div class="ls">5 min ago</div></div><div class="live-b">
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">1</div><div class="lstep-n">Scan threads</div><div class="lstep-t">2 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v">24 new threads scanned</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">2</div><div class="lstep-n">Match</div><div class="lstep-t">1 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">"Reducing churn?" — 9.2/10</span></div><div class="lo"><span class="p">></span><span class="v" style="color:var(--text4)">Skip: "What CRM?" — 2.1</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">3</div><div class="lstep-n">Draft</div><div class="lstep-t">3 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v hl">Angle: personal experience (2.3x)</span></div><div class="lo"><span class="p">></span><span class="v ok">87 words → approve queue</span></div></div></div>
+</div></div></div></div></div>`;
+
+P.xhs=`
+<div class="ph"><div class="pt"><h1><span class="back back-arrow" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Team</span> / 小红书 Agent</h1></div><div class="pa">${apBtn('xhs')}</div></div>
+<div class="pc">
+<div class="ah fi"><div class="ah-icon" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd);">X</div><div><div class="ah-name">小红书 Agent</div><div class="ah-desc">Chinese content adaptation, visual carousels, Xiaohongshu publishing</div></div><div class="ah-st" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd);">1 pending</div></div>
+<div class="mrow fi f1"><div class="met"><div class="ml">Posts (7d)</div><div class="mv">3</div></div><div class="met"><div class="ml">Saves</div><div class="mv">128</div></div><div class="met"><div class="ml">Engagement</div><div class="mv">7.4%</div><div class="md" style="color:var(--green)">vs 5.1%</div></div><div class="met"><div class="ml">Pending</div><div class="mv">1</div></div></div>
+<div class="two fi f1"><div>
+<div class="sl">posts</div>
+<div class="xhs-grid">
+<div class="xhs-card" style="border-color:var(--accent-bd);"><div class="xhs-cover" style="background:linear-gradient(135deg,var(--accent-bg),var(--pink-bg));"><div class="xst" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd);">pending</div>6 slides</div><div class="xhs-body"><div class="xhs-title">「SaaS用户留存的5个致命错误」</div><div class="xhs-meta"><span style="color:var(--yellow)">awaiting</span></div><div style="margin-top:6px;"><button class="bp btn" style="font-size:9px;padding:4px 10px;">Approve</button></div></div></div>
+<div class="xhs-card"><div class="xhs-cover" style="background:linear-gradient(135deg,var(--purple-bg),var(--pink-bg));"><div class="xst" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">live</div>6 slides</div><div class="xhs-body"><div class="xhs-title">「为什么前48小时最关键」</div><div class="xhs-meta"><span>45 saves</span><span>12 comments</span></div></div></div>
+<div class="xhs-card"><div class="xhs-cover" style="background:linear-gradient(135deg,var(--blue-bg),var(--purple-bg));"><div class="xst" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">live</div>6 slides</div><div class="xhs-body"><div class="xhs-title">「SaaS创业者增长指南」</div><div class="xhs-meta"><span>83 saves</span><span>8 comments</span></div></div></div>
+<div class="xhs-card"><div class="xhs-cover" style="background:linear-gradient(135deg,var(--green-bg),var(--blue-bg));"><div class="xst" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">live</div>6 slides</div><div class="xhs-body"><div class="xhs-title">「数据驱动的留存方法」</div><div class="xhs-meta"><span>34 saves</span><span>5 comments</span></div></div></div>
+</div></div><div>
+<div class="sl">live — adapting</div>
+<div class="live" style="margin-bottom:0;"><div class="live-h"><div class="ld" style="background:var(--pink);"></div><div class="lt">Pricing article → carousel</div><div class="ls">slide 4/6</div></div><div class="live-b">
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">1</div><div class="lstep-n">Analyze source</div><div class="lstep-t">5 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">5 key points extracted</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">2</div><div class="lstep-n">Rewrite in Chinese</div><div class="lstep-t">12 min</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v hl">Native rewrite</span></div><div class="lo"><span class="p">></span><span class="v ok">6 slides planned</span></div></div></div>
+<div class="lstep active"><div class="lstep-h"><div class="lstep-ic r">3</div><div class="lstep-n">Design slides</div><div class="lstep-t">now</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">Cover + slides 1-3 done</span></div><div class="lo"><span class="p">></span><span class="v str">Slide 4:「免费试用 vs 免费增值<span class="cur"></span></span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic p">4</div><div class="lstep-n">Hashtags</div><div class="lstep-t">pending</div></div></div>
+</div></div></div></div></div>`;
+
+P.geo=`
+<div class="ph"><div class="pt"><h1><span class="back back-arrow" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Team</span> / GEO Agent</h1></div><div class="pa">${apBtn('geo')}</div></div>
+<div class="pc">
+<div class="ah fi"><div class="ah-icon" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd);">G</div><div><div class="ah-name">GEO Agent</div><div class="ah-desc">AI search visibility — ChatGPT, Claude, Perplexity, Gemini</div></div><div class="ah-st" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">monitoring</div></div>
+<div class="mrow fi f1"><div class="met"><div class="ml">GEO score</div><div class="mv">34<span style="font-size:12px;color:var(--text3)">/100</span></div><div class="md" style="color:var(--green)">+6</div></div><div class="met"><div class="ml">Engines</div><div class="mv">4</div></div><div class="met"><div class="ml">Mentions</div><div class="mv">12</div></div><div class="met"><div class="ml">Citations</div><div class="mv">3</div></div></div>
+<div class="two fi f1"><div>
+<div class="sl">visibility by engine</div>
+<div class="geo-row"><div class="geo-name">Perplexity</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:42%;background:var(--blue);"></div></div><div class="geo-bar-info">4 mentions · 2 citations</div></div><div class="geo-score" style="color:var(--blue);">42</div><div class="geo-delta" style="color:var(--green);">+8</div></div>
+<div class="geo-row"><div class="geo-name">ChatGPT</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:35%;background:var(--green);"></div></div><div class="geo-bar-info">5 mentions · 1 citation</div></div><div class="geo-score">35</div><div class="geo-delta" style="color:var(--green);">+4</div></div>
+<div class="geo-row"><div class="geo-name">Claude</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:30%;background:var(--purple);"></div></div><div class="geo-bar-info">1 mention</div></div><div class="geo-score">30</div><div class="geo-delta" style="color:var(--text4);">0</div></div>
+<div class="geo-row"><div class="geo-name">Gemini</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:28%;background:var(--yellow);"></div></div><div class="geo-bar-info">2 mentions</div></div><div class="geo-score">28</div><div class="geo-delta" style="color:var(--green);">+2</div></div>
+<div class="sl">citations</div>
+<table class="tbl"><thead><tr><th>Query</th><th>Engine</th><th>Page</th></tr></thead><tbody>
+<tr><td class="tn">"reduce saas churn"</td><td><span class="tag" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd);">Perplexity</span></td><td style="font-size:10px;color:var(--text4);">/blog/reduce-churn</td></tr>
+<tr><td class="tn">"saas onboarding"</td><td><span class="tag" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd);">Perplexity</span></td><td style="font-size:10px;color:var(--text4);">/blog/onboarding</td></tr>
+<tr><td class="tn">"onboarding metrics"</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">ChatGPT</span></td><td style="font-size:10px;color:var(--text4);">/blog/onboarding</td></tr>
+</tbody></table></div><div>
+<div class="sl">live — Perplexity check</div>
+<div class="live" style="margin-bottom:0;"><div class="live-h"><div class="ld" style="background:var(--blue);"></div><div class="lt">Visibility check</div><div class="ls">query 3/8</div></div><div class="live-b">
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">1</div><div class="lstep-n">"saas onboarding tools"</div><div class="lstep-t">done</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v w">Not cited. Competitors: Mixpanel, Amplitude</span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic d">2</div><div class="lstep-n">"reduce saas churn"</div><div class="lstep-t">done</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v ok">/blog/reduce-churn cited</span></div></div></div>
+<div class="lstep active"><div class="lstep-h"><div class="lstep-ic r">3</div><div class="lstep-n">"onboarding best practices 2026"</div><div class="lstep-t">now</div></div><div class="lstep-o"><div class="lo"><span class="p">></span><span class="v str">Querying Perplexity<span class="cur"></span></span></div></div></div>
+<div class="lstep"><div class="lstep-h"><div class="lstep-ic p">4</div><div class="lstep-n">"saas analytics comparison"</div><div class="lstep-t">pending</div></div></div>
+</div></div></div></div></div>`;
+
+function go(p){if(!P[p])return;document.getElementById('mc').innerHTML=P[p];document.querySelectorAll('.ni,.ta').forEach(n=>n.classList.remove('ac'));const m={home:'n-home',approve:'n-approve',content:'n-content',knowledge:'n-knowledge',insights:'n-insights',reports:'n-reports',blog:'n-blog',seo:'n-seo',reddit:'n-reddit',xhs:'n-xhs',geo:'n-geo'};const e=document.getElementById(m[p]);if(e)e.classList.add('ac');window.scrollTo(0,0);closeAP();closeCMO();}
+// ===================== REPORTS PAGE =====================
+P.reports=`
+<div class="ph"><div class="pt"><h1>Reports</h1><div class="ptag">日报 · 周报</div></div><div class="pa"><button class="btn">Export PDF</button></div></div>
+<div class="pc">
+<div class="tabs" id="report-tabs"><div class="tab ac" onclick="reportTab(this,'rd')">Daily Brief</div><div class="tab" onclick="reportTab(this,'rw')">Weekly Summary</div></div>
+
+<div id="rd">
+<div class="date-header fi"><span class="dh-day">Thursday</span>March 20, 2026</div>
+<div class="sl fi">highlights</div>
+<div class="card fi"><div style="padding:16px;">
+<div style="display:flex;gap:12px;margin-bottom:14px;"><div class="met" style="flex:1;"><div class="ml">Visits today</div><div class="mv">342</div><div class="md" style="color:var(--green);">+18%</div></div><div class="met" style="flex:1;"><div class="ml">Content published</div><div class="mv">1</div></div><div class="met" style="flex:1;"><div class="ml">Actions taken</div><div class="mv">8</div></div></div>
+<div style="font-size:13px;color:var(--text2);line-height:1.7;">
+<strong style="color:var(--green);">📈 Win:</strong> "Pricing page mistakes" published — 847 views in 2h, picked up by 2 newsletters.<br>
+<strong style="color:var(--yellow);">⚠️ Watch:</strong> "saas metrics" keyword dropped #8→#12. SEO Agent scheduled refresh for next week.<br>
+<strong style="color:var(--accent);">🎯 Pending:</strong> 3 items awaiting approval (blog article, Reddit reply, 小红书 post).
+</div>
+</div></div>
+
+<div class="sl fi f1">agent activity</div>
+<table class="tbl fi f1"><thead><tr><th>Agent</th><th>Tasks</th><th>Done</th><th>Status</th></tr></thead><tbody>
+<tr><td class="tn"><span style="color:var(--purple);">●</span> Blog</td><td class="mn">3 articles</td><td class="mn">2 / 3</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">writing</span></td></tr>
+<tr><td class="tn"><span style="color:var(--green);">●</span> SEO</td><td class="mn">18 fixes</td><td class="mn">18 / 18</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">done</span></td></tr>
+<tr><td class="tn"><span style="color:var(--accent);">●</span> Reddit</td><td class="mn">4 replies</td><td class="mn">2 / 4</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">2 pending</span></td></tr>
+<tr><td class="tn"><span style="color:var(--pink);">●</span> 小红书</td><td class="mn">3 posts</td><td class="mn">2 / 3</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">1 pending</span></td></tr>
+<tr><td class="tn"><span style="color:var(--blue);">●</span> GEO</td><td class="mn">8 queries</td><td class="mn">3 / 8</td><td><span class="tag" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd)">checking</span></td></tr>
+</tbody></table>
+
+<div class="sl fi f2">timeline</div>
+<div class="act-card fi f2">
+<div class="act-item"><div class="act-dot" style="background:var(--purple);"></div><div class="act-text"><strong>9:00</strong> — Blog published "Pricing page mistakes"</div><div class="act-time">done</div></div>
+<div class="act-item"><div class="act-dot" style="background:var(--green);"></div><div class="act-text"><strong>8:30</strong> — SEO fixed 3 technical issues</div><div class="act-time">done</div></div>
+<div class="act-item"><div class="act-dot" style="background:var(--accent);"></div><div class="act-text"><strong>7:00</strong> — Reddit scanned 24 threads, drafted 2 replies</div><div class="act-time">done</div></div>
+<div class="act-item"><div class="act-dot" style="background:var(--blue);"></div><div class="act-text"><strong>6:00</strong> — GEO started Perplexity visibility check</div><div class="act-time">running</div></div>
+</div>
+</div>
+
+<div id="rw" style="display:none">
+<div class="date-header fi"><span class="dh-day">Week 12</span>March 14 – 20, 2026</div>
+<div class="sl fi">summary</div>
+<div class="card fi"><div style="padding:16px;">
+<div style="display:flex;gap:12px;margin-bottom:14px;"><div class="met" style="flex:1;"><div class="ml">Visits</div><div class="mv">2,680</div><div class="md" style="color:var(--green);">+22%</div></div><div class="met" style="flex:1;"><div class="ml">Content pieces</div><div class="mv">14</div><div class="md" style="color:var(--green);">+4</div></div><div class="met" style="flex:1;"><div class="ml">Keywords top 20</div><div class="mv">14</div><div class="md" style="color:var(--green);">+3</div></div><div class="met" style="flex:1;"><div class="ml">GEO score</div><div class="mv">34</div><div class="md" style="color:var(--green);">+6</div></div></div>
+<div style="font-size:13px;color:var(--text2);line-height:1.7;">
+<strong>Key insight:</strong> Onboarding content outperforms all other categories by <strong>2.3x</strong>. CMO recommends shifting from 20% → 40% onboarding focus.<br>
+<strong>Best performer:</strong> "The onboarding mistake that costs 40% of users" — 1,230 views, 6.1% engagement.<br>
+<strong>Alert:</strong> "saas metrics" keyword dropped 4 positions due to competitor refresh.
+</div>
+</div></div>
+
+<div class="sl fi f1">by channel</div>
+<div class="two fi f1">
+<div><div class="card"><div style="padding:16px;"><div style="font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;margin-bottom:8px;">BLOG</div><div style="font-size:12px;color:var(--text2);line-height:1.8;">Published: <strong>3</strong> articles<br>Total views: <strong>3,028</strong> (+32%)<br>Best: "Onboarding mistake" — 1,230 views<br>Pipeline: 1 article in progress</div></div></div>
+<div class="card" style="margin-top:10px;"><div style="padding:16px;"><div style="font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;margin-bottom:8px;">REDDIT</div><div style="font-size:12px;color:var(--text2);line-height:1.8;">Replies posted: <strong>4</strong><br>Avg upvotes: <strong>11</strong><br>Referral clicks: <strong>23</strong><br>Top sub: r/SaaS (67% of engagement)</div></div></div>
+</div>
+<div><div class="card"><div style="padding:16px;"><div style="font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;margin-bottom:8px;">SEO</div><div style="font-size:12px;color:var(--text2);line-height:1.8;">Issues fixed: <strong>18</strong><br>Avg rank change: <strong>+2.3</strong><br>Alert: "saas metrics" -4 positions<br>Action: Content refresh scheduled</div></div></div>
+<div class="card" style="margin-top:10px;"><div style="padding:16px;"><div style="font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;margin-bottom:8px;">小红书 + GEO</div><div style="font-size:12px;color:var(--text2);line-height:1.8;">小红书: <strong>3</strong> posts, 128 saves, 7.4% engagement<br>GEO: Score 34/100 (+6), best on Perplexity<br>Citations: 3 new this week</div></div></div>
+</div>
+</div>
+
+<div class="sl fi f2">CMO recommendations</div>
+<div class="card card-decision fi f2"><div style="padding:16px;font-size:12px;color:var(--text2);line-height:1.8;">
+1. <strong>Shift to 40% onboarding content</strong> — 2.3x performance vs other topics<br>
+2. <strong>Refresh "saas metrics" article</strong> — lost 4 positions, competitor updated<br>
+3. <strong>Double Reddit engagement</strong> — highest referral conversion rate (4.2%)<br>
+4. <strong>Add Perplexity optimization</strong> — best AI visibility, room to grow
+</div></div>
+</div>
+</div>`;
+
+// ===================== TAB SWITCHING =====================
+function insightTab(el,id){
+  document.querySelectorAll('#insights-tabs .tab').forEach(t=>t.classList.remove('ac'));
+  el.classList.add('ac');
+  ['io','is','ig','ic','ix'].forEach(i=>{const d=document.getElementById(i);if(d)d.style.display=i===id?'block':'none';});
+}
+function knowTab(el,id){
+  document.querySelectorAll('#know-tabs .tab').forEach(t=>t.classList.remove('ac'));
+  el.classList.add('ac');
+  ['kb','kp','ka','kc','kd'].forEach(i=>{const d=document.getElementById(i);if(d)d.style.display=i===id?'block':'none';});
+}
+function reportTab(el,id){
+  document.querySelectorAll('#report-tabs .tab').forEach(t=>t.classList.remove('ac'));
+  el.classList.add('ac');
+  ['rd','rw'].forEach(i=>{const d=document.getElementById(i);if(d)d.style.display=i===id?'block':'none';});
+}
+
+// ===================== CMO PANEL TABS =====================
+const cmoChatHTML=document.getElementById('cmo-body').innerHTML;
+const cmoPlanHTML=`
+<div class="sl" style="padding-top:4px;">current strategy</div>
+<div class="card" style="margin-bottom:12px;"><div style="padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7;">
+<strong>Focus:</strong> Onboarding content (40% allocation)<br>
+<strong>Channels:</strong> Blog (primary) → Reddit → 小红书 → SEO support<br>
+<strong>Target:</strong> +50% organic traffic in 8 weeks
+</div></div>
+<div class="sl">next week plan</div>
+<div style="font-size:12px;color:var(--text2);line-height:1.9;padding:4px 0;">
+<div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><span style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0;"></span><strong>Blog:</strong> 2 onboarding articles</div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></span><strong>Reddit:</strong> 5 churn/onboarding threads</div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><span style="width:6px;height:6px;border-radius:50%;background:var(--pink);flex-shrink:0;"></span><strong>小红书:</strong> Adapt articles to Chinese carousels</div>
+<div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></span><strong>SEO:</strong> Refresh "saas metrics" article</div>
+</div>
+<div style="display:flex;gap:6px;margin-top:14px;"><button class="bp btn" style="font-size:11px;padding:6px 14px;">Approve plan</button><button class="btn" style="font-size:11px;padding:6px 14px;">Adjust</button></div>
+`;
+const cmoCalHTML=`
+<div class="sl" style="padding-top:4px;">this week</div>
+<div style="font-size:12px;line-height:1.4;">
+<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;"><div style="font-family:var(--mono);font-size:10px;color:var(--text4);width:50px;flex-shrink:0;font-weight:600;">MON</div><div style="color:var(--text2);"><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">Blog</span> Published "Onboarding mistake costs 40%"</div></div>
+<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;"><div style="font-family:var(--mono);font-size:10px;color:var(--text4);width:50px;flex-shrink:0;font-weight:600;">TUE</div><div style="color:var(--text2);"><span class="ch" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">SEO</span> Full site audit (18 fixes)<br><span class="ch" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd)">Reddit</span> 2 replies posted</div></div>
+<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;"><div style="font-family:var(--mono);font-size:10px;color:var(--text4);width:50px;flex-shrink:0;font-weight:600;">WED</div><div style="color:var(--text2);"><span class="ch" style="background:var(--pink-bg);color:var(--pink);border-color:var(--pink-bd)">小红书</span> 2 carousel posts published</div></div>
+<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;"><div style="font-family:var(--mono);font-size:10px;color:var(--accent);width:50px;flex-shrink:0;font-weight:600;">THU</div><div style="color:var(--text);font-weight:500;"><span class="ch" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd)">Blog</span> Writing "5 onboarding mistakes" <span style="font-family:var(--mono);font-size:9px;color:var(--accent);">← today</span></div></div>
+<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;"><div style="font-family:var(--mono);font-size:10px;color:var(--text4);width:50px;flex-shrink:0;font-weight:600;">FRI</div><div style="color:var(--text3);font-style:italic;">Blog publish + Reddit 2 new replies (scheduled)</div></div>
+</div>
+<div class="sl" style="margin-top:14px;">upcoming</div>
+<div style="font-size:12px;color:var(--text3);line-height:1.7;padding:4px 0;">
+<strong>Week 13:</strong> 2 onboarding articles, "saas metrics" refresh, 3 小红书 carousels<br>
+<strong>Week 14:</strong> Guest post outreach, new keyword batch, GEO optimization push
+</div>
+`;
+function cmoTab(t){
+  const tabs=document.querySelectorAll('#cmo-pn .pn-tab');
+  tabs.forEach(tab=>tab.classList.remove('ac'));
+  tabs[t==='chat'?0:t==='plan'?1:2].classList.add('ac');
+  const body=document.getElementById('cmo-body');
+  const ia=document.getElementById('cmo-pn').querySelector('.pn-ia');
+  if(t==='chat'){body.innerHTML=cmoChatHTML;ia.style.display='flex';}
+  else if(t==='plan'){body.innerHTML=cmoPlanHTML;ia.style.display='none';}
+  else{body.innerHTML=cmoCalHTML;ia.style.display='none';}
+}
+
+// Don't show home initially — onboarding is visible
+// go('home');
+
+// ===================== ONBOARDING =====================
+const obAgentDefs=[
+{id:'blog',c:'B',n:'Blog Agent',d:'Long-form SEO articles & content',color:'var(--purple)',bg:'var(--purple-bg)',bd:'var(--purple-bd)'},
+{id:'seo',c:'S',n:'SEO Agent',d:'Technical SEO audits & keyword tracking',color:'var(--green)',bg:'var(--green-bg)',bd:'var(--green-bd)'},
+{id:'reddit',c:'R',n:'Reddit Agent',d:'Community engagement & reply drafting',color:'var(--accent)',bg:'var(--accent-bg)',bd:'var(--accent-bd)'},
+{id:'xhs',c:'X',n:'小红书 Agent',d:'Chinese content adaptation & carousels',color:'var(--pink)',bg:'var(--pink-bg)',bd:'var(--pink-bd)'},
+{id:'geo',c:'G',n:'GEO Agent',d:'AI search visibility optimization',color:'var(--blue)',bg:'var(--blue-bg)',bd:'var(--blue-bd)'}
+];
+
+let obGoals=0, obTone=null, obEditing=false;
+
+function obAnalyze(){
+  const url=document.getElementById('ob-url').value.trim();
+  if(!url){document.getElementById('ob-url').focus();return;}
+  document.getElementById('ob-analyze-btn').disabled=true;
+  document.getElementById('ob-analyze-btn').textContent='Analyzing...';
+  obGoStep(2);
+  // Simulate scanning animation
+  const lines=['osl-1','osl-2','osl-3','osl-4'];
+  lines.forEach((id,i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById(id);
+      el.classList.add('show');
+    }, i*400);
+    setTimeout(()=>{
+      const el=document.getElementById(id);
+      el.classList.add('done');
+      el.querySelector('.ob-scan-ico').innerHTML='✓';
+    }, (i+1)*600+200);
+  });
+  // Show results after scanning
+  setTimeout(()=>{
+    document.getElementById('ob-scan-sub').textContent='We found everything we need.';
+    document.querySelector('#ob-step-2 .ob-h1').textContent='Analysis complete';
+    document.getElementById('ob-result-wrap').style.display='block';
+  }, lines.length*600+600);
+}
+
+function obGoStep(n){
+  document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));
+  const step=document.getElementById('ob-step-'+n);
+  if(step)step.classList.add('active');
+  if(n===4) obBuildReady();
+}
+
+function obToggleGoal(el){
+  el.classList.toggle('selected');
+  obGoals=document.querySelectorAll('.ob-goal.selected').length;
+  obCheckGoalsBtn();
+}
+
+function obCheckGoalsBtn(){
+  document.getElementById('ob-goals-btn').disabled=!(obGoals>0);
+}
+
+function obToggleEdit(){
+  obEditing=!obEditing;
+  const fields=['obr-product','obr-category','obr-audience'];
+  const btn=document.getElementById('ob-edit-btn');
+  if(obEditing){
+    btn.textContent='Done';
+    fields.forEach(id=>{
+      const el=document.getElementById(id);
+      const val=el.textContent;
+      el.innerHTML=`<input class="ob-edit-input" value="${val}">`;
+    });
+  } else {
+    btn.textContent='Edit';
+    fields.forEach(id=>{
+      const el=document.getElementById(id);
+      const input=el.querySelector('input');
+      if(input) el.textContent=input.value;
+    });
+  }
+}
+
+function obBuildReady(){
+  const selectedGoals=[];
+  document.querySelectorAll('.ob-goal.selected').forEach(g=>{
+    selectedGoals.push(g.querySelector('.ob-goal-name').textContent);
+  });
+  const rec=new Set();
+  selectedGoals.forEach(g=>{
+    if(g.includes('100 users')){rec.add('blog');rec.add('seo');rec.add('reddit');}
+    if(g.includes('traffic')){rec.add('blog');rec.add('seo');rec.add('geo');}
+    if(g.includes('SEO')){rec.add('seo');rec.add('blog');rec.add('geo');}
+    if(g.includes('social')){rec.add('reddit');rec.add('xhs');}
+  });
+  if(rec.size===0) obAgentDefs.forEach(a=>rec.add(a.id));
+  const agents=obAgentDefs.filter(a=>rec.has(a.id));
+  const list=document.getElementById('ob-agents-list');
+  // Build with "launching" state, then animate sequentially
+  list.innerHTML=agents.map((a,i)=>`
+    <div class="ob-agent-row launching" data-agent="${a.id}" style="opacity:1;transform:none;animation:fadeUp .3s ease forwards;animation-delay:${i*0.1}s;">
+      <div class="ob-agent-ico" style="background:${a.bg};color:${a.color};border-color:${a.bd};">${a.c}</div>
+      <div class="ob-agent-info"><div class="ob-agent-name">${a.n}</div><div class="ob-agent-desc">${a.d}</div></div>
+      <div class="ob-agent-status">Initializing...</div>
+    </div>`).join('');
+  document.getElementById('ob-ready-sub').textContent='Activating '+agents.length+' agent'+(agents.length>1?'s':'')+'...';
+  // Sequential activation animation
+  const rows=list.querySelectorAll('.ob-agent-row');
+  rows.forEach((row,i)=>{
+    setTimeout(()=>{
+      row.classList.remove('launching');
+      row.classList.add('activating','launched');
+      row.querySelector('.ob-agent-status').textContent='Ready';
+    }, (i+1)*400);
+  });
+  setTimeout(()=>{
+    document.getElementById('ob-ready-sub').textContent=agents.length+' agent'+(agents.length>1?'s':'')+' will start working on your goals now.';
+  }, (agents.length+1)*400);
+}
+
+function obFinish(){
+  const ov=document.getElementById('ob-overlay');
+  ov.classList.add('hidden');
+  setTimeout(()=>{ov.style.display='none';}, 400);
+  go('home');
+}
+
+// Allow Enter key on URL input
+document.getElementById('ob-url').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();obAnalyze();}
+});
+</script>
+</body>
+</html>
