@@ -639,8 +639,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <!-- Step 4: Social Channels -->
 <div class="ob-step" id="ob-step-4">
 <div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
-<h1 class="ob-h1">Connect your channels</h1>
-<p class="ob-sub">We'll monitor these channels to find opportunities for you.</p>
+<h1 class="ob-h1">Where can we find you?</h1>
+<p class="ob-sub">Adding your social profiles helps us analyze your organic reach and find growth opportunities across channels.</p>
 <div class="ob-channels">
 <div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M6.5 6.5L17.5 17.5M6 12h12"/></svg>Reddit</div><input class="ob-channel-input" type="text" placeholder="u/username" spellcheck="false"></div>
 <div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 4s-2.7-.9-4-1c-1.3 1.4-3 2-4.5 2.2C12.3 3.9 10.5 3 8 3 5 3 2.6 5.2 3 8c.5 3.5 3 7 9 11 6-4 8.5-7.5 9-11 0-.7-.1-1.3-.3-1.8"/></svg>Twitter / X</div><input class="ob-channel-input" type="text" placeholder="@handle" spellcheck="false"></div>
@@ -1061,58 +1061,92 @@ P.audit=`
 <div class="apb-track"><div class="apb-fill"></div></div>
 </div>
 
-<div class="sl fi">marketing readiness score</div>
-<div class="audit-score fi f1">
+<div class="two fi" style="gap:18px;align-items:start;">
+<div>
+<div class="audit-score" style="margin-bottom:0;">
 <div class="audit-ring">
-<svg viewBox="0 0 100 100" width="100" height="100">
+<svg viewBox="0 0 100 100" width="80" height="80">
 <circle class="ring-bg" cx="50" cy="50" r="40"/>
 <circle class="ring-fg" cx="50" cy="50" r="40"/>
 </svg>
-<div class="audit-ring-val"><div class="arv-num">42</div><div class="arv-label">/ 100</div></div>
+<div class="audit-ring-val"><div class="arv-num" style="font-size:24px;">42</div><div class="arv-label">/ 100</div></div>
 </div>
-<div style="flex:1;font-size:13px;color:var(--text2);line-height:1.7;">
+<div style="flex:1;font-size:12px;color:var(--text2);line-height:1.6;">
 <strong style="color:var(--text);">Marketing Readiness: Needs Work</strong><br>
-Your site has good technical foundations but lacks content depth, AI visibility, and competitive keyword coverage. Your agents are already working on the top issues.
+Good technical foundations, but lacks content depth, AI visibility, and keyword coverage.
+</div>
+</div>
+</div>
+<div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+<div class="audit-metric-box" style="padding:8px;"><div class="amb-val" style="color:var(--green);font-size:18px;">78</div><div class="amb-label" style="font-size:9px;">Perf</div></div>
+<div class="audit-metric-box" style="padding:8px;"><div class="amb-val" style="color:var(--green);font-size:18px;">92</div><div class="amb-label" style="font-size:9px;">A11y</div></div>
+<div class="audit-metric-box" style="padding:8px;"><div class="amb-val" style="color:var(--green);font-size:18px;">85</div><div class="amb-label" style="font-size:9px;">BP</div></div>
+<div class="audit-metric-box" style="padding:8px;"><div class="amb-val" style="color:var(--yellow);font-size:18px;">71</div><div class="amb-label" style="font-size:9px;">SEO</div></div>
+</div>
+<div class="audit-cwv" style="margin-top:8px;margin-bottom:0;">
+<div class="audit-cwv-item" style="padding:6px 8px;"><div class="acv-val" style="color:var(--yellow);font-size:13px;">2.4s</div><div class="acv-label" style="font-size:8px;">LCP</div></div>
+<div class="audit-cwv-item" style="padding:6px 8px;"><div class="acv-val" style="color:var(--green);font-size:13px;">180ms</div><div class="acv-label" style="font-size:8px;">TBT</div></div>
+<div class="audit-cwv-item" style="padding:6px 8px;"><div class="acv-val" style="color:var(--green);font-size:13px;">0.08</div><div class="acv-label" style="font-size:8px;">CLS</div></div>
+<div class="audit-cwv-item" style="padding:6px 8px;"><div class="acv-val" style="color:var(--green);font-size:13px;">1.2s</div><div class="acv-label" style="font-size:8px;">FCP</div></div>
+</div>
 </div>
 </div>
 
-<div class="sl fi f1">page performance</div>
-<div class="mrow fi f1">
-<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">78</div><div class="amb-label">Performance</div></div>
-<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">92</div><div class="amb-label">Accessibility</div></div>
-<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">85</div><div class="amb-label">Best Practices</div></div>
-<div class="audit-metric-box"><div class="amb-val" style="color:var(--yellow);">71</div><div class="amb-label">SEO</div></div>
-</div>
-<div class="sl fi f1">core web vitals</div>
-<div class="audit-cwv fi f1">
-<div class="audit-cwv-item"><div class="acv-val" style="color:var(--yellow);">2.4s</div><div class="acv-label">LCP</div></div>
-<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">180ms</div><div class="acv-label">TBT</div></div>
-<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">0.08</div><div class="acv-label">CLS</div></div>
-<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">1.2s</div><div class="acv-label">FCP</div></div>
-</div>
-
-<div class="sl fi f2">SEO health</div>
-<table class="tbl fi f2"><thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead><tbody>
-<tr><td class="tn">Meta Title</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">Present on all pages</td></tr>
-<tr><td class="tn">Meta Description</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">warning</span></td><td style="font-size:11px;color:var(--yellow);">2 pages missing</td></tr>
-<tr><td class="tn">Mobile Friendly</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">Responsive on all breakpoints</td></tr>
-<tr><td class="tn">Image Alt Tags</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">fixed</span></td><td style="font-size:11px;color:var(--green);">4 missing → auto-fixed by SEO Agent</td></tr>
-<tr><td class="tn">Internal Links</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">23 links found</td></tr>
-<tr><td class="tn">External Links</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">8 links found</td></tr>
-<tr><td class="tn">Schema Markup</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">missing</span></td><td style="font-size:11px;color:var(--red);">No structured data found</td></tr>
+<div class="two fi f1" style="gap:18px;align-items:start;margin-top:14px;">
+<div>
+<div class="act-card">
+<div class="act-h" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg><div class="act-cnt" style="font-size:12px;font-weight:600;color:var(--text);">SEO Health</div><div class="act-live" style="color:var(--yellow);">1 issue</div></div>
+<div class="act-body"><div style="padding:0;">
+<table class="tbl" style="border:none;box-shadow:none;"><thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead><tbody>
+<tr><td class="tn">Meta Title</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:10px;color:var(--text3);">All pages</td></tr>
+<tr><td class="tn">Meta Description</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">warn</span></td><td style="font-size:10px;color:var(--yellow);">2 missing</td></tr>
+<tr><td class="tn">Mobile Friendly</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:10px;color:var(--text3);">Responsive</td></tr>
+<tr><td class="tn">Image Alt Tags</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">fixed</span></td><td style="font-size:10px;color:var(--green);">4 auto-fixed</td></tr>
+<tr><td class="tn">Schema Markup</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">missing</span></td><td style="font-size:10px;color:var(--red);">No structured data</td></tr>
 </tbody></table>
-
-<div class="sl fi f2">AI / GEO visibility</div>
-<div class="fi f2">
-<div class="geo-row"><div class="geo-name">Perplexity</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:42%;background:var(--blue);"></div></div><div class="geo-bar-info">2 citations found</div></div><div class="geo-score" style="color:var(--blue);">42</div></div>
-<div class="geo-row"><div class="geo-name">ChatGPT</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:35%;background:var(--green);"></div></div><div class="geo-bar-info">1 citation found</div></div><div class="geo-score">35</div></div>
-<div class="geo-row"><div class="geo-name">Claude</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:30%;background:var(--purple);"></div></div><div class="geo-bar-info">0 citations</div></div><div class="geo-score">30</div></div>
-<div class="geo-row"><div class="geo-name">Gemini</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:28%;background:var(--yellow);"></div></div><div class="geo-bar-info">0 citations</div></div><div class="geo-score">28</div></div>
-<div class="card" style="margin-top:10px;"><div style="padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.6;"><strong style="color:var(--text);">Your competitors are cited 3x more often.</strong> GEO Agent is optimizing your content for better AI engine visibility.</div></div>
+</div></div>
 </div>
 
-<div class="sl fi f3">keyword gap analysis</div>
-<table class="tbl fi f3"><thead><tr><th>Keyword</th><th>Competitor Rank</th><th>Your Rank</th><th>Volume</th><th>Difficulty</th></tr></thead><tbody>
+<div class="act-card" style="margin-top:10px;">
+<div class="act-h" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg><div class="act-cnt" style="font-size:12px;font-weight:600;color:var(--text);">Content Gap</div><div class="act-live" style="color:var(--red);">3 high gaps</div></div>
+<div class="act-body"><div style="padding:0;">
+<table class="tbl" style="border:none;box-shadow:none;"><thead><tr><th>Topic</th><th>You</th><th>Competitor</th><th>Gap</th></tr></thead><tbody>
+<tr><td class="tn">Onboarding</td><td class="mn">2</td><td class="mn">8</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Churn reduction</td><td class="mn">1</td><td class="mn">5</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Product analytics</td><td class="mn">0</td><td class="mn">6</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Pricing strategy</td><td class="mn">1</td><td class="mn">3</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">med</span></td></tr>
+</tbody></table>
+</div></div>
+</div>
+</div>
+
+<div>
+<div class="act-card">
+<div class="act-h" onclick="tog(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg><div class="act-cnt" style="font-size:12px;font-weight:600;color:var(--text);">AI / GEO Visibility</div><div class="act-live" style="color:var(--blue);">34/100</div></div>
+<div class="act-body"><div style="padding:10px 16px;">
+<div class="geo-row" style="padding:10px 0;border:none;box-shadow:none;margin-bottom:0;"><div class="geo-name" style="width:70px;font-size:12px;">Perplexity</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:42%;background:var(--blue);"></div></div></div><div class="geo-score" style="font-size:16px;width:30px;">42</div></div>
+<div class="geo-row" style="padding:10px 0;border:none;box-shadow:none;margin-bottom:0;"><div class="geo-name" style="width:70px;font-size:12px;">ChatGPT</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:35%;background:var(--green);"></div></div></div><div class="geo-score" style="font-size:16px;width:30px;">35</div></div>
+<div class="geo-row" style="padding:10px 0;border:none;box-shadow:none;margin-bottom:0;"><div class="geo-name" style="width:70px;font-size:12px;">Claude</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:30%;background:var(--purple);"></div></div></div><div class="geo-score" style="font-size:16px;width:30px;">30</div></div>
+<div class="geo-row" style="padding:10px 0;border:none;box-shadow:none;margin-bottom:0;"><div class="geo-name" style="width:70px;font-size:12px;">Gemini</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:28%;background:var(--yellow);"></div></div></div><div class="geo-score" style="font-size:16px;width:30px;">28</div></div>
+<div style="font-size:11px;color:var(--text3);margin-top:6px;">Competitors are cited <strong style="color:var(--text2);">3x more often</strong>. GEO Agent is optimizing.</div>
+</div></div>
+</div>
+
+<div class="card" style="margin-top:10px;"><div style="padding:14px 16px;">
+<div style="font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;margin-bottom:8px;">TRAFFIC ESTIMATION</div>
+<div style="display:flex;gap:8px;margin-bottom:8px;">
+<div style="flex:1;text-align:center;padding:8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);"><div style="font-family:var(--mono);font-size:16px;font-weight:700;">~200</div><div style="font-size:9px;color:var(--text4);">You /mo</div></div>
+<div style="flex:1;text-align:center;padding:8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);"><div style="font-family:var(--mono);font-size:16px;font-weight:700;">~15K</div><div style="font-size:9px;color:var(--text4);">Competitor /mo</div></div>
+<div style="flex:1;text-align:center;padding:8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);"><div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--green);">+2.4K</div><div style="font-size:9px;color:var(--text4);">Potential /mo</div></div>
+</div>
+<div style="font-size:11px;color:var(--text3);line-height:1.5;">Closing top 5 keyword gaps = <strong style="color:var(--text2);">+2,400 visits/mo</strong></div>
+</div></div>
+</div>
+</div>
+
+<div class="sl fi f1">keyword gap analysis</div>
+<table class="tbl fi f2" style="font-size:11px;"><thead><tr><th>Keyword</th><th>Them</th><th>You</th><th>Vol</th><th>Diff</th></tr></thead><tbody>
 <tr><td class="tn">saas onboarding tools</td><td class="mn" style="color:var(--green);">#3</td><td class="mn" style="color:var(--red);">#28</td><td class="mn">2.4K</td><td class="mn">42</td></tr>
 <tr><td class="tn">reduce churn saas</td><td class="mn" style="color:var(--green);">#5</td><td class="mn" style="color:var(--yellow);">#18</td><td class="mn">1.8K</td><td class="mn">38</td></tr>
 <tr><td class="tn">user onboarding checklist</td><td class="mn" style="color:var(--green);">#2</td><td class="mn" style="color:var(--red);">--</td><td class="mn">1.5K</td><td class="mn">31</td></tr>
@@ -1121,28 +1155,9 @@ Your site has good technical foundations but lacks content depth, AI visibility,
 <tr><td class="tn">activation rate benchmark</td><td class="mn" style="color:var(--green);">#6</td><td class="mn" style="color:var(--red);">--</td><td class="mn">720</td><td class="mn">28</td></tr>
 </tbody></table>
 
-<div class="sl fi f3">traffic estimation</div>
-<div class="card fi f3"><div style="padding:18px;font-size:13px;color:var(--text2);line-height:1.7;">
-<div style="display:flex;gap:16px;margin-bottom:12px;">
-<div class="met" style="flex:1;"><div class="ml">Your organic traffic</div><div class="mv">~200<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
-<div class="met" style="flex:1;"><div class="ml">Competitor avg</div><div class="mv">~15,000<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
-<div class="met" style="flex:1;"><div class="ml">Potential gain</div><div class="mv" style="color:var(--green);">+2,400<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
-</div>
-Closing your top 5 keyword gaps could bring an estimated <strong>2,400 extra visits per month</strong>. Blog Agent and SEO Agent are already targeting these gaps.
-</div></div>
-
-<div class="sl fi f3">content gap</div>
-<table class="tbl fi f3"><thead><tr><th>Topic Cluster</th><th>Your Coverage</th><th>Competitor Coverage</th><th>Gap</th></tr></thead><tbody>
-<tr><td class="tn">Onboarding optimization</td><td class="mn">2 articles</td><td class="mn">8 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
-<tr><td class="tn">Churn reduction</td><td class="mn">1 article</td><td class="mn">5 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
-<tr><td class="tn">Product analytics</td><td class="mn">0 articles</td><td class="mn">6 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
-<tr><td class="tn">Pricing strategy</td><td class="mn">1 article</td><td class="mn">3 articles</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">medium</span></td></tr>
-<tr><td class="tn">A/B testing</td><td class="mn">0 articles</td><td class="mn">4 articles</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">medium</span></td></tr>
-</tbody></table>
-
-<div style="text-align:center;padding:28px 0;" class="fi f3">
-<div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Your agents are already working on the top issues.</div>
-<button class="bp btn" style="padding:10px 24px;font-size:13px;" onclick="go('home')">Go to Dashboard</button>
+<div style="text-align:center;padding:20px 0 8px;" class="fi f2">
+<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Your agents are already working on the top issues.</div>
+<button class="bp btn" style="padding:8px 20px;font-size:12px;" onclick="go('home')">Go to Dashboard</button>
 </div>
 </div>`;
 
