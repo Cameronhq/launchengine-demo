@@ -188,7 +188,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .pipe-fill{position:absolute;top:50%;left:0;height:2px;transform:translateY(-50%);border-radius:1px;}
 .pipe-nodes{position:relative;display:flex;align-items:center;width:100%;justify-content:space-between;z-index:1;}
 .nd{width:14px;height:14px;min-width:14px;max-height:14px;flex-shrink:0;flex-grow:0;border-radius:50%;border:2px solid var(--border2);background:var(--surface);transition:var(--t);position:relative;box-sizing:content-box;aspect-ratio:1;}
-.nd.done{background:var(--green);border-color:var(--green);padding:0;text-align:initial;}.nd.done::after{content:'';position:absolute;top:3px;left:3px;width:4px;height:4px;border-radius:50%;background:#fff;}
+.nd.done{background:var(--green);border-color:var(--green);padding:0 !important;text-align:initial;}.nd.done::after{content:'';position:absolute;top:3px;left:3px;width:4px;height:4px;border-radius:50%;background:#fff;}
 .nd.active{border-color:var(--accent);animation:np 2s infinite;}.nd.active::after{content:'';position:absolute;top:-5px;left:-5px;right:-5px;bottom:-5px;border-radius:50%;border:2px solid var(--accent);opacity:.25;animation:rp 2s infinite;}
 .nd.err{background:var(--red);border-color:var(--red);}.nd.err::after{content:'';position:absolute;top:3px;left:3px;width:4px;height:4px;border-radius:50%;background:#fff;}
 .ps2{position:absolute;top:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:8px;font-weight:600;padding:3px 7px;border-radius:4px;margin-top:5px;border:1px solid;}
@@ -479,6 +479,93 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 /* Decision card: mini chart */
 .decision-chart{display:flex;align-items:flex-end;gap:3px;height:32px;padding:4px 16px 10px;}
 .decision-bar{width:14px;border-radius:3px 3px 0 0;transition:var(--t);}
+
+/* Onboarding: Social channels step */
+.ob-channels{max-width:420px;margin:0 auto 28px;text-align:left;}
+.ob-channel-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r2);margin-bottom:8px;background:var(--surface);transition:var(--t);}
+.ob-channel-row:hover{border-color:var(--border2);}
+.ob-channel-label{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text3);width:100px;flex-shrink:0;display:flex;align-items:center;gap:6px;}
+.ob-channel-label svg{width:14px;height:14px;opacity:.5;}
+.ob-channel-input{flex:1;padding:8px 12px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);font-size:13px;font-family:var(--mono);color:var(--text);outline:none;transition:var(--t);}
+.ob-channel-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg);}
+.ob-channel-input::placeholder{color:var(--text4);}
+.ob-skip{font-family:var(--mono);font-size:12px;color:var(--text4);cursor:pointer;margin-top:12px;display:inline-block;transition:var(--t);}
+.ob-skip:hover{color:var(--text2);}
+
+/* Onboarding: Trial pricing card */
+.ob-pricing{max-width:380px;margin:0 auto 28px;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);box-shadow:var(--shadow);overflow:hidden;}
+.ob-pricing-header{padding:24px 24px 16px;text-align:center;border-bottom:1px solid var(--border);}
+.ob-pricing-price{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--text);letter-spacing:-1px;}
+.ob-pricing-price span{font-size:16px;font-weight:500;color:var(--text3);}
+.ob-pricing-trial{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;margin-top:4px;}
+.ob-pricing-features{padding:16px 24px;font-size:12px;color:var(--text2);line-height:2;}
+.ob-pricing-features li{list-style:none;padding-left:16px;position:relative;}
+.ob-pricing-features li::before{content:'';position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--green);}
+.ob-pricing-form{padding:16px 24px 24px;}
+.ob-pricing-email{width:100%;padding:12px 16px;border-radius:var(--r2);border:1px solid var(--border2);background:var(--bg);font-size:14px;font-family:var(--sans);color:var(--text);outline:none;margin-bottom:10px;box-sizing:border-box;}
+.ob-pricing-email:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.ob-pricing-email::placeholder{color:var(--text4);}
+.ob-google-link{font-family:var(--mono);font-size:11px;color:var(--text4);cursor:pointer;display:block;text-align:center;margin-top:10px;transition:var(--t);}
+.ob-google-link:hover{color:var(--text2);}
+
+/* Onboarding guidance cards on dashboard */
+.ob-guide{display:flex;gap:10px;margin-bottom:14px;}
+.ob-guide-card{flex:1;display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);box-shadow:var(--shadow-sm);transition:var(--t);}
+.ob-guide-card:hover{border-color:var(--border2);box-shadow:var(--shadow);}
+.ob-guide-card .og-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid;}
+.ob-guide-card .og-ico svg{width:16px;height:16px;}
+.ob-guide-card .og-text{flex:1;font-size:12px;color:var(--text2);line-height:1.4;}
+.ob-guide-card .og-text strong{color:var(--text);display:block;font-size:13px;margin-bottom:2px;}
+.ob-guide-dismiss{width:20px;height:20px;border-radius:4px;border:none;background:transparent;color:var(--text4);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ob-guide-dismiss:hover{background:var(--bg2);color:var(--text3);}
+
+/* Trial end card */
+.trial-card{border:2px solid var(--accent-bd);border-radius:var(--r2);padding:20px 24px;margin-bottom:18px;background:var(--accent-bg);box-shadow:var(--shadow-sm);}
+.trial-card h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.trial-card p{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;}
+
+/* Audit page */
+.audit-progress-bar{padding:16px 18px;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);margin-bottom:18px;box-shadow:var(--shadow-sm);}
+.audit-progress-bar .apb-text{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:500;}
+.audit-progress-bar .apb-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.audit-progress-bar .apb-fill{height:100%;border-radius:3px;background:var(--accent);animation:auditProg 3s ease-in-out infinite;}
+@keyframes auditProg{0%{width:45%}50%{width:85%}100%{width:45%}}
+.audit-score{display:flex;align-items:center;gap:24px;padding:24px;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);margin-bottom:18px;box-shadow:var(--shadow-sm);}
+.audit-ring{position:relative;width:100px;height:100px;flex-shrink:0;}
+.audit-ring svg{transform:rotate(-90deg);}
+.audit-ring .ring-bg{fill:none;stroke:var(--bg3);stroke-width:8;}
+.audit-ring .ring-fg{fill:none;stroke:var(--red);stroke-width:8;stroke-linecap:round;stroke-dasharray:251.2;stroke-dashoffset:145.7;transition:stroke-dashoffset 1s ease;}
+.audit-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);}
+.audit-ring-val .arv-num{font-size:28px;font-weight:700;color:var(--text);line-height:1;}
+.audit-ring-val .arv-label{font-size:9px;color:var(--text4);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.audit-metric-box{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);}
+.audit-metric-box .amb-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);}
+.audit-metric-box .amb-label{font-size:10px;color:var(--text4);margin-top:2px;font-weight:500;}
+.audit-cwv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+.audit-cwv-item{padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);text-align:center;box-shadow:var(--shadow-sm);}
+.audit-cwv-item .acv-val{font-family:var(--mono);font-size:16px;font-weight:700;}
+.audit-cwv-item .acv-label{font-size:10px;color:var(--text4);margin-top:2px;font-weight:500;}
+
+/* Settings page */
+.settings-form{max-width:560px;}
+.settings-field{margin-bottom:12px;}
+.settings-field label{display:block;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text4);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.settings-field input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:var(--sans);color:var(--text);background:var(--bg);outline:none;box-sizing:border-box;}
+.settings-field input:focus{border-color:var(--border3);}
+.settings-plan{border:1px solid var(--border);border-radius:var(--r2);padding:18px;background:var(--surface);margin-bottom:16px;box-shadow:var(--shadow-sm);}
+.settings-plan-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.settings-plan-name{font-size:14px;font-weight:700;color:var(--text);}
+.settings-plan-price{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);}
+.settings-usage{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.settings-usage-item{text-align:center;padding:10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);}
+.settings-usage-item .su-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text);}
+.settings-usage-item .su-label{font-size:10px;color:var(--text4);margin-top:2px;}
+.settings-notif-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;background:var(--surface);}
+.settings-notif-row .snr-info{font-size:13px;font-weight:500;color:var(--text);}
+.settings-notif-row .snr-desc{font-size:11px;color:var(--text4);margin-top:1px;}
+.settings-channel-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);margin-bottom:6px;background:var(--surface);}
+.settings-channel-row .scr-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.settings-channel-row .scr-status{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid;}
 </style>
 </head>
 <body>
@@ -531,10 +618,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <button class="btn" id="ob-edit-btn" onclick="obToggleEdit()" style="padding:14px 24px;font-size:14px;">Edit</button>
 </div>
 </div>
-<div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+<div class="ob-progress"><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
 </div>
 
-<!-- Step 3: Goals + Tone -->
+<!-- Step 3: Goals -->
 <div class="ob-step" id="ob-step-3">
 <div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
 <h1 class="ob-h1">Set your goals</h1>
@@ -546,17 +633,49 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <div class="ob-goal" onclick="obToggleGoal(this)"><div class="ob-goal-check">✓</div><div class="ob-goal-emoji">📣</div><div class="ob-goal-name">Grow social presence</div><div class="ob-goal-desc">Build audience on Reddit, 小红书 & more</div></div>
 </div>
 <button class="ob-continue" id="ob-goals-btn" onclick="obGoStep(4)" disabled>Continue</button>
+<div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+</div>
+
+<!-- Step 4: Social Channels -->
+<div class="ob-step" id="ob-step-4">
+<div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
+<h1 class="ob-h1">Connect your channels</h1>
+<p class="ob-sub">We'll monitor these channels to find opportunities for you.</p>
+<div class="ob-channels">
+<div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M6.5 6.5L17.5 17.5M6 12h12"/></svg>Reddit</div><input class="ob-channel-input" type="text" placeholder="u/username" spellcheck="false"></div>
+<div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 4s-2.7-.9-4-1c-1.3 1.4-3 2-4.5 2.2C12.3 3.9 10.5 3 8 3 5 3 2.6 5.2 3 8c.5 3.5 3 7 9 11 6-4 8.5-7.5 9-11 0-.7-.1-1.3-.3-1.8"/></svg>Twitter / X</div><input class="ob-channel-input" type="text" placeholder="@handle" spellcheck="false"></div>
+<div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn</div><input class="ob-channel-input" type="text" placeholder="linkedin.com/in/..." spellcheck="false"></div>
+<div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 17V7h4l3 5 3-5h4v10"/></svg>小红书</div><input class="ob-channel-input" type="text" placeholder="account name" spellcheck="false"></div>
+<div class="ob-channel-row"><div class="ob-channel-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="M4 4l8 8 8-8"/></svg>Hacker News</div><input class="ob-channel-input" type="text" placeholder="username" spellcheck="false"></div>
+</div>
+<button class="ob-continue" onclick="obGoStep(5)">Continue</button>
+<span class="ob-skip" onclick="obGoStep(5)">Skip for now</span>
 <div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
 </div>
 
-<!-- Step 4: Ready -->
-<div class="ob-step" id="ob-step-4">
+<!-- Step 5: Start Trial -->
+<div class="ob-step" id="ob-step-5">
 <div class="ob-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="name">LaunchEngine</div></div>
-<div class="ob-ready-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
-<h1 class="ob-h1">Your AI marketing team is ready</h1>
-<p class="ob-sub" id="ob-ready-sub">5 agents will start working on your goals now.</p>
-<div class="ob-agents-list" id="ob-agents-list"></div>
-<button class="ob-launch-btn" onclick="obFinish()">Launch AI Marketing Team</button>
+<h1 class="ob-h1">Start your free trial</h1>
+<p class="ob-sub"></p>
+<div class="ob-pricing">
+<div class="ob-pricing-header">
+<div class="ob-pricing-price">$99<span>/mo</span></div>
+<div class="ob-pricing-trial">3-day free trial &middot; No credit card required</div>
+</div>
+<ul class="ob-pricing-features">
+<li>5 AI agents</li>
+<li>Unlimited content</li>
+<li>All channels</li>
+<li>Site audit</li>
+<li>Daily reports</li>
+</ul>
+<div class="ob-pricing-form">
+<input class="ob-pricing-email" type="email" placeholder="you@company.com" spellcheck="false">
+<button class="ob-analyze-btn" style="width:100%;text-align:center;" onclick="obFinish()">Start free trial</button>
+<span class="ob-google-link" onclick="obFinish()">or continue with Google</span>
+</div>
+</div>
 <div class="ob-progress"><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot passed"></div><div class="ob-dot active"></div></div>
 </div>
 
@@ -582,6 +701,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <div class="ni" id="n-content" onclick="go('content')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Content</div>
 <div class="ni" id="n-knowledge" onclick="go('knowledge')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Knowledge</div>
 <div class="ni" id="n-insights" onclick="go('insights')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Insights</div>
+<div class="ni" id="n-audit" onclick="go('audit')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Site Audit</div>
 <div class="ni" id="n-reports" onclick="go('reports')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Reports</div>
 <div class="nl">your team</div>
 <div class="tree">
@@ -597,6 +717,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 <div class="ta" id="n-geo" onclick="go('geo')"><div class="ad" style="background:var(--blue)"></div>GEO<span class="ab" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">ok</span></div>
 </div>
 </div>
+<div class="ni" id="n-settings" onclick="go('settings')" style="margin-top:auto;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
 </nav>
 <div class="s-btm">
 <div class="s-user">
@@ -682,6 +803,11 @@ P.home=`
 
 <div class="date-header fi"><span class="dh-day">Thursday</span>March 20, 2026</div>
 
+<div class="ob-guide fi">
+<div class="ob-guide-card"><div class="og-ico" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple-bd);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="og-text"><strong>Connect Slack</strong>Get approval notifications on your phone</div><button class="bp btn" style="font-size:10px;padding:5px 12px;flex-shrink:0;">Connect</button><button class="ob-guide-dismiss" onclick="this.closest('.ob-guide-card').style.display='none'">&times;</button></div>
+<div class="ob-guide-card"><div class="og-ico" style="background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M6.5 6.5L17.5 17.5M6 12h12"/></svg></div><div class="og-text"><strong>Authorize Reddit</strong>Let Reddit Agent post replies directly</div><button class="bp btn" style="font-size:10px;padding:5px 12px;flex-shrink:0;">Authorize</button><button class="ob-guide-dismiss" onclick="this.closest('.ob-guide-card').style.display='none'">&times;</button></div>
+</div>
+
 <div class="status fi" style="background:var(--yellow-bg);border-color:var(--yellow-bd);"><div class="sd" style="background:var(--yellow);"></div><div class="sm" style="color:var(--yellow);">3 items + 1 decision</div><div class="sdate">updated 9:00 AM</div></div>
 
 <div class="chips fi f1"><div class="chip"><span class="cv">2,680</span><span class="cl">visits</span><span class="cd" style="color:var(--green)">+22%</span></div><div class="chip"><span class="cv">#11</span><span class="cl">rank</span><span class="cd" style="color:var(--text4)">hold</span></div><div class="chip"><span class="cv">34</span><span class="cl">GEO</span><span class="cd" style="color:var(--green)">+6</span></div><div class="chip"><span class="cv">68</span><span class="cl">health</span><span class="cd" style="color:var(--green)">+4</span></div></div>
@@ -714,7 +840,14 @@ P.home=`
 <div class="act-item"><div class="act-dot" style="background:var(--green);"></div><div class="act-text"><strong>SEO</strong> fixed alt text + meta descriptions</div><div class="act-time">4h</div></div>
 <div class="act-item"><div class="act-dot" style="background:var(--blue);"></div><div class="act-text"><strong>Reddit</strong> found 2 threads → drafted replies</div><div class="act-time">5h</div></div>
 <div class="act-item"><div class="act-dot" style="background:var(--yellow);"></div><div class="act-text"><strong>SEO</strong> ranking drop: "saas metrics" #8→#12</div><div class="act-time">yday</div></div>
-</div></div></div>`;
+</div></div>
+
+<div class="trial-card fi f3">
+<h3>Your free trial ends today</h3>
+<p>In 3 days, your agents have: written <strong>2 articles</strong> (1,230 views), posted <strong>4 Reddit replies</strong> (23 referrals), fixed <strong>18 SEO issues</strong>, improved your health score from <strong>42 to 58</strong>.</p>
+<button class="bp btn" style="padding:8px 20px;">Continue for $99/mo</button>
+</div>
+</div>`;
 
 P.approve=`
 <div class="ph"><div class="pt"><h1>Approve</h1><div class="ptag">3 items</div></div></div>
@@ -849,7 +982,7 @@ P.geo=`
 <div class="lstep"><div class="lstep-h"><div class="lstep-ic p">4</div><div class="lstep-n">"saas analytics comparison"</div><div class="lstep-t">pending</div></div></div>
 </div></div></div></div></div>`;
 
-function go(p){if(!P[p])return;document.getElementById('mc').innerHTML=P[p];document.querySelectorAll('.ni,.ta').forEach(n=>n.classList.remove('ac'));const m={home:'n-home',approve:'n-approve',content:'n-content',knowledge:'n-knowledge',insights:'n-insights',reports:'n-reports',blog:'n-blog',seo:'n-seo',reddit:'n-reddit',xhs:'n-xhs',geo:'n-geo'};const e=document.getElementById(m[p]);if(e)e.classList.add('ac');window.scrollTo(0,0);closeAP();closeCMO();}
+function go(p){if(!P[p])return;document.getElementById('mc').innerHTML=P[p];document.querySelectorAll('.ni,.ta').forEach(n=>n.classList.remove('ac'));const m={home:'n-home',approve:'n-approve',content:'n-content',knowledge:'n-knowledge',insights:'n-insights',audit:'n-audit',reports:'n-reports',settings:'n-settings',blog:'n-blog',seo:'n-seo',reddit:'n-reddit',xhs:'n-xhs',geo:'n-geo'};const e=document.getElementById(m[p]);if(e)e.classList.add('ac');window.scrollTo(0,0);closeAP();closeCMO();}
 // ===================== REPORTS PAGE =====================
 P.reports=`
 <div class="ph"><div class="pt"><h1>Reports</h1><div class="ptag">日报 · 周报</div></div><div class="pa"><button class="btn">Export PDF</button></div></div>
@@ -918,7 +1051,158 @@ P.reports=`
 </div>
 </div>`;
 
+// ===================== AUDIT PAGE =====================
+P.audit=`
+<div class="ph"><div class="pt"><h1>Site Audit</h1><div class="ptag">diagnostic</div></div><div class="pa"><button class="btn" onclick="go('home')">Go to Dashboard</button></div></div>
+<div class="pc">
+
+<div class="audit-progress-bar fi">
+<div class="apb-text">Running full analysis... This usually takes 1-2 minutes.</div>
+<div class="apb-track"><div class="apb-fill"></div></div>
+</div>
+
+<div class="sl fi">marketing readiness score</div>
+<div class="audit-score fi f1">
+<div class="audit-ring">
+<svg viewBox="0 0 100 100" width="100" height="100">
+<circle class="ring-bg" cx="50" cy="50" r="40"/>
+<circle class="ring-fg" cx="50" cy="50" r="40"/>
+</svg>
+<div class="audit-ring-val"><div class="arv-num">42</div><div class="arv-label">/ 100</div></div>
+</div>
+<div style="flex:1;font-size:13px;color:var(--text2);line-height:1.7;">
+<strong style="color:var(--text);">Marketing Readiness: Needs Work</strong><br>
+Your site has good technical foundations but lacks content depth, AI visibility, and competitive keyword coverage. Your agents are already working on the top issues.
+</div>
+</div>
+
+<div class="sl fi f1">page performance</div>
+<div class="mrow fi f1">
+<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">78</div><div class="amb-label">Performance</div></div>
+<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">92</div><div class="amb-label">Accessibility</div></div>
+<div class="audit-metric-box"><div class="amb-val" style="color:var(--green);">85</div><div class="amb-label">Best Practices</div></div>
+<div class="audit-metric-box"><div class="amb-val" style="color:var(--yellow);">71</div><div class="amb-label">SEO</div></div>
+</div>
+<div class="sl fi f1">core web vitals</div>
+<div class="audit-cwv fi f1">
+<div class="audit-cwv-item"><div class="acv-val" style="color:var(--yellow);">2.4s</div><div class="acv-label">LCP</div></div>
+<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">180ms</div><div class="acv-label">TBT</div></div>
+<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">0.08</div><div class="acv-label">CLS</div></div>
+<div class="audit-cwv-item"><div class="acv-val" style="color:var(--green);">1.2s</div><div class="acv-label">FCP</div></div>
+</div>
+
+<div class="sl fi f2">SEO health</div>
+<table class="tbl fi f2"><thead><tr><th>Check</th><th>Status</th><th>Details</th></tr></thead><tbody>
+<tr><td class="tn">Meta Title</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">Present on all pages</td></tr>
+<tr><td class="tn">Meta Description</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">warning</span></td><td style="font-size:11px;color:var(--yellow);">2 pages missing</td></tr>
+<tr><td class="tn">Mobile Friendly</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">Responsive on all breakpoints</td></tr>
+<tr><td class="tn">Image Alt Tags</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">fixed</span></td><td style="font-size:11px;color:var(--green);">4 missing → auto-fixed by SEO Agent</td></tr>
+<tr><td class="tn">Internal Links</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">23 links found</td></tr>
+<tr><td class="tn">External Links</td><td><span class="tag" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd)">pass</span></td><td style="font-size:11px;color:var(--text3);">8 links found</td></tr>
+<tr><td class="tn">Schema Markup</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">missing</span></td><td style="font-size:11px;color:var(--red);">No structured data found</td></tr>
+</tbody></table>
+
+<div class="sl fi f2">AI / GEO visibility</div>
+<div class="fi f2">
+<div class="geo-row"><div class="geo-name">Perplexity</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:42%;background:var(--blue);"></div></div><div class="geo-bar-info">2 citations found</div></div><div class="geo-score" style="color:var(--blue);">42</div></div>
+<div class="geo-row"><div class="geo-name">ChatGPT</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:35%;background:var(--green);"></div></div><div class="geo-bar-info">1 citation found</div></div><div class="geo-score">35</div></div>
+<div class="geo-row"><div class="geo-name">Claude</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:30%;background:var(--purple);"></div></div><div class="geo-bar-info">0 citations</div></div><div class="geo-score">30</div></div>
+<div class="geo-row"><div class="geo-name">Gemini</div><div class="geo-bar-w"><div class="geo-bar"><div class="gf" style="width:28%;background:var(--yellow);"></div></div><div class="geo-bar-info">0 citations</div></div><div class="geo-score">28</div></div>
+<div class="card" style="margin-top:10px;"><div style="padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.6;"><strong style="color:var(--text);">Your competitors are cited 3x more often.</strong> GEO Agent is optimizing your content for better AI engine visibility.</div></div>
+</div>
+
+<div class="sl fi f3">keyword gap analysis</div>
+<table class="tbl fi f3"><thead><tr><th>Keyword</th><th>Competitor Rank</th><th>Your Rank</th><th>Volume</th><th>Difficulty</th></tr></thead><tbody>
+<tr><td class="tn">saas onboarding tools</td><td class="mn" style="color:var(--green);">#3</td><td class="mn" style="color:var(--red);">#28</td><td class="mn">2.4K</td><td class="mn">42</td></tr>
+<tr><td class="tn">reduce churn saas</td><td class="mn" style="color:var(--green);">#5</td><td class="mn" style="color:var(--yellow);">#18</td><td class="mn">1.8K</td><td class="mn">38</td></tr>
+<tr><td class="tn">user onboarding checklist</td><td class="mn" style="color:var(--green);">#2</td><td class="mn" style="color:var(--red);">--</td><td class="mn">1.5K</td><td class="mn">31</td></tr>
+<tr><td class="tn">product analytics comparison</td><td class="mn" style="color:var(--green);">#4</td><td class="mn" style="color:var(--red);">--</td><td class="mn">1.2K</td><td class="mn">45</td></tr>
+<tr><td class="tn">saas metrics dashboard</td><td class="mn" style="color:var(--green);">#2</td><td class="mn" style="color:var(--yellow);">#12</td><td class="mn">1.5K</td><td class="mn">36</td></tr>
+<tr><td class="tn">activation rate benchmark</td><td class="mn" style="color:var(--green);">#6</td><td class="mn" style="color:var(--red);">--</td><td class="mn">720</td><td class="mn">28</td></tr>
+</tbody></table>
+
+<div class="sl fi f3">traffic estimation</div>
+<div class="card fi f3"><div style="padding:18px;font-size:13px;color:var(--text2);line-height:1.7;">
+<div style="display:flex;gap:16px;margin-bottom:12px;">
+<div class="met" style="flex:1;"><div class="ml">Your organic traffic</div><div class="mv">~200<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
+<div class="met" style="flex:1;"><div class="ml">Competitor avg</div><div class="mv">~15,000<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
+<div class="met" style="flex:1;"><div class="ml">Potential gain</div><div class="mv" style="color:var(--green);">+2,400<span style="font-size:12px;color:var(--text3)">/mo</span></div></div>
+</div>
+Closing your top 5 keyword gaps could bring an estimated <strong>2,400 extra visits per month</strong>. Blog Agent and SEO Agent are already targeting these gaps.
+</div></div>
+
+<div class="sl fi f3">content gap</div>
+<table class="tbl fi f3"><thead><tr><th>Topic Cluster</th><th>Your Coverage</th><th>Competitor Coverage</th><th>Gap</th></tr></thead><tbody>
+<tr><td class="tn">Onboarding optimization</td><td class="mn">2 articles</td><td class="mn">8 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Churn reduction</td><td class="mn">1 article</td><td class="mn">5 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Product analytics</td><td class="mn">0 articles</td><td class="mn">6 articles</td><td><span class="tag" style="background:var(--red-bg);color:var(--red);border-color:var(--red-bd)">high</span></td></tr>
+<tr><td class="tn">Pricing strategy</td><td class="mn">1 article</td><td class="mn">3 articles</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">medium</span></td></tr>
+<tr><td class="tn">A/B testing</td><td class="mn">0 articles</td><td class="mn">4 articles</td><td><span class="tag" style="background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)">medium</span></td></tr>
+</tbody></table>
+
+<div style="text-align:center;padding:28px 0;" class="fi f3">
+<div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Your agents are already working on the top issues.</div>
+<button class="bp btn" style="padding:10px 24px;font-size:13px;" onclick="go('home')">Go to Dashboard</button>
+</div>
+</div>`;
+
+// ===================== SETTINGS PAGE =====================
+P.settings=`
+<div class="ph"><div class="pt"><h1>Settings</h1></div></div>
+<div class="pc">
+<div class="tabs" id="settings-tabs">
+<div class="tab ac" onclick="settingsTab(this,'st-account')">Account</div>
+<div class="tab" onclick="settingsTab(this,'st-billing')">Billing</div>
+<div class="tab" onclick="settingsTab(this,'st-notif')">Notifications</div>
+<div class="tab" onclick="settingsTab(this,'st-channels')">Channels</div>
+</div>
+
+<div id="st-account">
+<div class="settings-form">
+<div class="settings-field"><label>Name</label><input type="text" value="John Doe" readonly></div>
+<div class="settings-field"><label>Email</label><input type="email" value="john@yourproduct.com" readonly></div>
+<div class="settings-field"><label>Password</label><input type="password" value="••••••••••" readonly></div>
+<div style="margin-top:16px;"><button class="btn">Edit profile</button></div>
+</div>
+</div>
+
+<div id="st-billing" style="display:none;">
+<div class="settings-plan">
+<div class="settings-plan-header">
+<div class="settings-plan-name">Starter Plan</div>
+<div class="settings-plan-price">$99/mo</div>
+</div>
+<div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Free trial &middot; 3 days remaining</div>
+<div class="settings-usage">
+<div class="settings-usage-item"><div class="su-val">5</div><div class="su-label">AI Agents</div></div>
+<div class="settings-usage-item"><div class="su-val">14</div><div class="su-label">Content pieces</div></div>
+<div class="settings-usage-item"><div class="su-val">42</div><div class="su-label">Pages scanned</div></div>
+</div>
+<button class="bp btn" style="padding:8px 20px;">Upgrade plan</button>
+</div>
+</div>
+
+<div id="st-notif" style="display:none;">
+<div class="settings-notif-row"><div><div class="snr-info">Email digest</div><div class="snr-desc">Daily summary of agent activity</div></div><label class="sp-tog"><input type="checkbox" checked><span class="sr"></span></label></div>
+<div class="settings-notif-row"><div><div class="snr-info">Slack notifications</div><div class="snr-desc">Get notified in your Slack workspace</div></div><label class="sp-tog"><input type="checkbox"><span class="sr"></span></label></div>
+<div class="settings-notif-row"><div><div class="snr-info">Approval alerts</div><div class="snr-desc">Push notification when items need approval</div></div><label class="sp-tog"><input type="checkbox" checked><span class="sr"></span></label></div>
+</div>
+
+<div id="st-channels" style="display:none;">
+<div class="settings-channel-row"><div class="scr-name">Reddit</div><div class="scr-status" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">connected</div><button class="btn" style="font-size:11px;padding:5px 12px;">Disconnect</button></div>
+<div class="settings-channel-row"><div class="scr-name">Twitter / X</div><div class="scr-status" style="background:var(--bg3);color:var(--text4);border-color:var(--border);">not connected</div><button class="bp btn" style="font-size:11px;padding:5px 12px;">Connect</button></div>
+<div class="settings-channel-row"><div class="scr-name">LinkedIn</div><div class="scr-status" style="background:var(--bg3);color:var(--text4);border-color:var(--border);">not connected</div><button class="bp btn" style="font-size:11px;padding:5px 12px;">Connect</button></div>
+<div class="settings-channel-row"><div class="scr-name">小红书</div><div class="scr-status" style="background:var(--green-bg);color:var(--green);border-color:var(--green-bd);">connected</div><button class="btn" style="font-size:11px;padding:5px 12px;">Disconnect</button></div>
+<div class="settings-channel-row"><div class="scr-name">Hacker News</div><div class="scr-status" style="background:var(--bg3);color:var(--text4);border-color:var(--border);">not connected</div><button class="bp btn" style="font-size:11px;padding:5px 12px;">Connect</button></div>
+</div>
+</div>`;
+
 // ===================== TAB SWITCHING =====================
+function settingsTab(el,id){
+  document.querySelectorAll('#settings-tabs .tab').forEach(t=>t.classList.remove('ac'));
+  el.classList.add('ac');
+  ['st-account','st-billing','st-notif','st-channels'].forEach(i=>{const d=document.getElementById(i);if(d)d.style.display=i===id?'block':'none';});
+}
 function insightTab(el,id){
   document.querySelectorAll('#insights-tabs .tab').forEach(t=>t.classList.remove('ac'));
   el.classList.add('ac');
@@ -1024,7 +1308,6 @@ function obGoStep(n){
   document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));
   const step=document.getElementById('ob-step-'+n);
   if(step)step.classList.add('active');
-  if(n===4) obBuildReady();
 }
 
 function obToggleGoal(el){
@@ -1099,7 +1382,7 @@ function obFinish(){
   const ov=document.getElementById('ob-overlay');
   ov.classList.add('hidden');
   setTimeout(()=>{ov.style.display='none';}, 400);
-  go('home');
+  go('audit');
 }
 
 // Allow Enter key on URL input
